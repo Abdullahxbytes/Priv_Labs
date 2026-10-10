@@ -3,7 +3,7 @@ import { calculatePrivacyScore } from "./scoring.js";
 import type { PrivacyExtraction } from "./policy-extraction-schema.js";
 
 export interface ReportInput extends ComparisonInput {
-  app: Record<string, unknown>;
+  app: object;
   comparisons: ComparisonFinding[];
   policyUrl?: string | null;
 }

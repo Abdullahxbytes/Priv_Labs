@@ -7,6 +7,7 @@
 import express from 'express';
 import searchRouter from './routes/searchRoute';
 import retrieveRouter from './routes/retrieveRoute';
+import analyzeRouter from './routes/analyzeRoute';
 
 export function createApp(): express.Application {
   const app = express();
@@ -27,6 +28,7 @@ export function createApp(): express.Application {
   // Standalone retrieval endpoint for testing and Member 3 integration reference.
   // Member 3's /api/analyze/:appId will call retrieveAppData() directly.
   app.use('/api/retrieve', retrieveRouter);
+  app.use('/api/analyze', analyzeRouter);
 
   // --- Health check ---
   app.get('/health', (_req, res) => {
