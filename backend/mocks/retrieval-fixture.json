@@ -1,0 +1,91 @@
+{
+  "_note": "MOCK FIXTURE — for development/testing only. Not real app data. Matches the retrieval-layer contract in docs/API_CONTRACT.md Section 15. Member 3 can use this to develop the Privacy Engine in parallel.",
+  "app": {
+    "appId": "com.spotify.music",
+    "name": "Spotify: Music and Podcasts",
+    "developer": "Spotify AB",
+    "icon": "https://play-lh.googleusercontent.com/UrLjBXGrTi1k6GQkJsEEEKRjPRSn2GNmurN8WvJPFGh6wJHR6Z4Kg2o=s256",
+    "rating": 4.3,
+    "category": "Music & Audio",
+    "storeUrl": "https://play.google.com/store/apps/details?id=com.spotify.music"
+  },
+  "permissions": [
+    {
+      "raw": "android.permission.ACCESS_FINE_LOCATION",
+      "name": "Precise Location",
+      "category": "location"
+    },
+    {
+      "raw": "android.permission.READ_CONTACTS",
+      "name": "Read Contacts",
+      "category": "contacts"
+    },
+    {
+      "raw": "android.permission.CAMERA",
+      "name": "Camera",
+      "category": "camera"
+    },
+    {
+      "raw": "android.permission.RECORD_AUDIO",
+      "name": "Microphone",
+      "category": "microphone"
+    },
+    {
+      "raw": "android.permission.READ_MEDIA_IMAGES",
+      "name": "Read Photos",
+      "category": "photos"
+    }
+  ],
+  "dataSafety": {
+    "collected": [
+      {
+        "type": "location",
+        "label": "Approximate location",
+        "purposes": ["App functionality", "Analytics"]
+      },
+      {
+        "type": "personal_information",
+        "label": "Name",
+        "purposes": ["Account management"]
+      },
+      {
+        "type": "personal_information",
+        "label": "Email address",
+        "purposes": ["Account management"]
+      },
+      {
+        "type": "app_activity",
+        "label": "App interactions",
+        "purposes": ["Analytics", "Personalization"]
+      }
+    ],
+    "shared": [
+      {
+        "type": "personal_information",
+        "label": "Name",
+        "purposes": ["Advertising"],
+        "recipients": ["advertising partners"]
+      },
+      {
+        "type": "device_identifiers",
+        "label": "Device or other IDs",
+        "purposes": ["Advertising"],
+        "recipients": ["advertising partners"]
+      }
+    ],
+    "securityPractices": [
+      "Data is encrypted in transit",
+      "You can request that data be deleted"
+    ],
+    "deletionAvailable": true
+  },
+  "privacyPolicy": {
+    "url": "https://www.spotify.com/us/legal/privacy-policy/",
+    "text": "MOCK POLICY TEXT — replace with real Cheerio-cleaned policy content. We collect information you provide to us, such as your name, email address, date of birth, gender, street address, country, and telephone number. We use cookies and similar tracking technologies to track activity on our services. We may share your information with our advertising partners to show you more relevant ads."
+  },
+  "sourceStatus": {
+    "permissions": "available",
+    "dataSafety": "available",
+    "privacyPolicy": "available"
+  }
+}
