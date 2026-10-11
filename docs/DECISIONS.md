@@ -79,7 +79,7 @@ Allowed status values are `Proposed`, `Accepted`, `Superseded`, and `Rejected`. 
 
 **Date:** 2026-10-10
 
-**Status:** Accepted
+**Status:** Superseded
 
 **Decision:** The core AI must use an open-source/open-weight model of 8B parameters or fewer through the Groq API. The exact model name, model ID, and parameter count remain **TO BE CONFIRMED** until verified on the hackathon Groq account.
 
@@ -87,7 +87,7 @@ Allowed status values are `Proposed`, `Accepted`, `Superseded`, and `Rejected`. 
 
 **Impact:** Member 3 must confirm the account-available model before implementation and record the confirmation. AI behavior must remain structured, evidence-grounded, and separate from scoring.
 
-**Supersedes:** None
+**Supersedes:** None. Replaced by DEC-009.
 
 **Related Docs:**
 - `docs/SOURCE_OF_TRUTH.md`
@@ -192,6 +192,26 @@ Allowed status values are `Proposed`, `Accepted`, `Superseded`, and `Rejected`. 
 - `docs/ARCHITECTURE.md`
 - `docs/team/APP_DATA.md`
 
+## DEC-009 — Production AI Model Upgrade
+
+**Date:** 2026-10-12
+
+**Status:** Accepted
+
+**Decision:** Remove the former 8B model limit and use OpenAI GPT-OSS 120B through Groq with model ID `openai/gpt-oss-120b`. The model is open-weight and has 117B total parameters with 5.1B active parameters per token. Keep the model configurable through `GROQ_MODEL`.
+
+**Reason:** The project is no longer constrained by the hackathon model-size rule, and the larger production model provides stronger structured-output support for privacy-policy extraction. Its availability was verified through the configured Groq account.
+
+**Impact:** AI configuration, extraction verification, deployment environment variables, architecture documentation, testing records, and setup instructions must use the selected model. AI remains evidence-grounded and does not calculate the privacy score.
+
+**Supersedes:** DEC-003
+
+**Related Docs:**
+- `docs/SOURCE_OF_TRUTH.md`
+- `docs/AI_SPEC.md`
+- `docs/API_CONTRACT.md`
+- `docs/ARCHITECTURE.md`
+
 ## Change Control
 
 Future teammates and coding agents must add a decision before changing architecture, frozen API fields, major schema structure, the AI provider/model, prompt behavior, scoring weights or thresholds, score direction, team ownership, MVP scope, caching/storage strategy, or major error handling. Record replacements by marking the prior entry `Superseded`; do not silently change shared assumptions.
@@ -200,7 +220,6 @@ Future teammates and coding agents must add a decision before changing architect
 
 These remain intentionally open because the referenced documents do not finalize them:
 
-- Exact Groq model name, ID, and parameter count (within the 8B limit).
 - Final AI prompt and generation settings.
 - Scoring weights, thresholds, duplicate-penalty rules, and insufficient-evidence score/risk representation; `docs/SCORING.md` does not yet exist.
 - Complete normalized category mappings, permission risk/expected-use rules, and detailed cache freshness metadata.

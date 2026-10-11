@@ -63,7 +63,7 @@ export async function retrieveAppData(appId: string): Promise<OrchestratorResult
   ]);
 
   // 4. Privacy policy
-  const policyResult = await retrievePrivacyPolicy(metadataResult.privacyPolicyUrl);
+  const policyResult = await retrievePrivacyPolicy(dataSafetyResult.privacyPolicyUrl ?? metadataResult.privacyPolicyUrl);
 
   // 5. Assemble output
   const sourceStatus: RetrievalSourceStatus = {

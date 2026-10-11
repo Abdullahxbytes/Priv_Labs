@@ -45,7 +45,7 @@ Replace “Not run” only after execution. Record the exact appId or fixture, d
 | T18 | AI | Ambiguous wording | Ambiguous policy fixture | `unclear` with uncertainty preserved. | Not run | NOT TESTED | Do not force a definitive fact. |
 | T19 | AI | Invalid JSON | Malformed/wrong-shape model response | Safe validation failure; at most one controlled malformed-output retry, then partial fallback. | Not run | NOT TESTED | Persistent invalid output sets AI failed. |
 | T20 | AI | Groq unavailable | Controlled Groq failure | `sourceStatus.aiAnalysis` is failed; non-AI sources remain usable. | Not run | NOT TESTED | No fabricated policy findings. |
-| T21 | AI | Long policy | Policy exceeding confirmed practical input limit | Chunk handling works or incomplete-analysis limitation is clearly recorded. | Not run | NOT TESTED | Verify merged evidence and no silent truncation. |
+| T21 | AI | Long policy | Policy exceeding confirmed practical input limit | Privacy-relevant section selection works and an incomplete-analysis limitation is clearly recorded. | Spotify policy | PASSED | Verify selected evidence and visible limitation after model or tier changes. |
 | T22 | Comparison | Three sources agree | Location permission; collection declared in Data Safety and policy | Consistent finding; no false mismatch. | Not run | NOT TESTED | Declarations must describe compatible practices. |
 | T23 | Comparison | Permission not clearly disclosed | Contacts requested; inspected disclosures lack clear contacts handling | Possible mismatch/unclear disclosure with cautious wording. | Not run | NOT TESTED | Sources must have been successfully inspected. |
 | T24 | Comparison | Data Safety/policy mismatch | Explicit no-sharing declaration versus advertising-partner sharing in policy | Possible disclosure mismatch with evidence. | Not run | NOT TESTED | Missing declaration is not explicit denial. |
@@ -82,7 +82,7 @@ Replace “Not run” only after execution. Record the exact appId or fixture, d
 
 ## 6. AI Tests
 
-**T15–T21** cover live Groq extraction, evidence, finding statuses, malformed output, outages, and long inputs. Record exact model name/ID/parameter count, prompt version, settings, and fixture or policy source. Verify an open-source/open-weight model of **8B parameters or smaller** on the hackathon account; mock responses alone do not establish live AI success.
+**T15–T21** cover live Groq extraction, evidence, finding statuses, malformed output, outages, and long inputs. Record exact model name/ID/parameter count, prompt version, settings, and fixture or policy source. Verify `openai/gpt-oss-120b` through the configured Groq account; mock responses alone do not establish live AI success.
 
 ## 7. Comparison Tests
 
@@ -140,7 +140,7 @@ Use the following template only for real observations; it is not an existing iss
 - Privacy policies may be vague or incomplete.
 - External scraping can fail; policy sites may block retrieval.
 - AI can misinterpret legal language; Groq availability can affect analysis.
-- Long policies may require chunking with visible coverage limitations.
+- Long policies may require selective privacy-section analysis with visible coverage limitations.
 - The system does not observe runtime behavior.
 - The privacy score is heuristic, not legal/compliance certification.
 - In-memory cached data can become outdated and is lost on process restart.

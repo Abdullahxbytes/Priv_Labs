@@ -8,7 +8,7 @@
  * Each source is retrieved independently; failures set sourceStatus accordingly.
  */
 
-import gplay, { IAppItemFullDetail, IDataSafetyItem, IPermissionItem } from 'google-play-scraper';
+import type { IAppItemFullDetail, IPermissionItem } from 'google-play-scraper';
 import {
   AppMetadata,
   DataSafety,
@@ -18,6 +18,7 @@ import {
   RetrievedPermission,
 } from '../types';
 import { normalizePermissions } from './permissionNormalizer';
+import { adaptDataSafety } from './dataSafetyAdapter';
 
 // ---------------------------------------------------------------------------
 // App Metadata
@@ -36,6 +37,7 @@ export interface MetadataResult {
  */
 export async function retrieveAppMetadata(appId: string): Promise<MetadataResult> {
   try {
+    const { default: gplay } = await import('google-play-scraper');
     const raw: IAppItemFullDetail = await gplay.app({ appId, lang: 'en', country: 'us' });
 
     const app: AppMetadata = {
@@ -54,8 +56,7 @@ export async function retrieveAppMetadata(appId: string): Promise<MetadataResult
     // but not reliably typed — cast to any to access it if present.
     const rawAny = raw as unknown as Record<string, unknown>;
     const privacyPolicyUrl =
-      (typeof rawAny['privacyPolicy'] === 'string' ? rawAny['privacyPolicy'] : null) ??
-      (typeof raw.developerWebsite === 'string' ? raw.developerWebsite : null);
+      (typeof rawAny['privacyPolicy'] === 'string' ? rawAny['privacyPolicy'] : null);
 
     return { app, privacyPolicyUrl };
   } catch (err: unknown) {
@@ -82,7 +83,8 @@ export interface PermissionsResult {
 export async function retrievePermissions(appId: string): Promise<PermissionsResult> {
   try {
     // IFnPermissionsOptions.short expects string per type defs
-    const raw: IPermissionItem[] = await gplay.permissions({ appId, lang: 'en', short: 'false' });
+    const { default: gplay } = await import('google-play-scraper');
+    const raw: IPermissionItem[] = await gplay.permissions({ appId, lang: 'en' });
 
     // Each entry is { permission: string, type: string }
     const rawStrings: string[] = raw
@@ -107,6 +109,7 @@ export async function retrievePermissions(appId: string): Promise<PermissionsRes
 
 export interface DataSafetyResult {
   dataSafety: DataSafety;
+  privacyPolicyUrl?: string | null;
   status: RetrievalSourceStatus['dataSafety'];
   error?: string;
 }
@@ -125,69 +128,9 @@ export async function retrieveDataSafety(appId: string): Promise<DataSafetyResul
   };
 
   try {
-    // datasafety() returns IDataSafetyItem[]: [{data, optional, purpose, type}, ...]
-    // Each item represents one data-safety row from the Play Store section.
-    const raw: IDataSafetyItem[] = await gplay.datasafety({ appId, lang: 'en' });
-
-    if (!Array.isArray(raw)) {
-      return { dataSafety: empty, status: 'unavailable' };
-    }
-
-    // The scraper does not distinguish collected vs shared vs security in the type,
-    // so we use the 'type' field heuristically. All entries are treated as 'collected'
-    // since the scraper flattens the Data Safety section.
-    // Recipients are not available from this scraper endpoint.
-    const collected: DataSafetyCollectedItem[] = [];
-    const shared: DataSafetySharedItem[] = [];
-    const securityPractices: string[] = [];
-
-    for (const item of raw) {
-      if (!item || !item.type) continue;
-
-      const typeStr = item.type.toLowerCase();
-
-      // Heuristic: security-related rows go to securityPractices
-      if (
-        typeStr.includes('security') ||
-        typeStr.includes('encrypt') ||
-        typeStr.includes('deletion') ||
-        typeStr.includes('delete')
-      ) {
-        securityPractices.push(item.data ?? item.type);
-        continue;
-      }
-
-      // All other rows treated as collected data
-      collected.push({
-        type: item.type,
-        label: item.data ?? item.type,
-        purposes: item.purpose ? [item.purpose] : [],
-      });
-    }
-
-    // Deletion: look for explicit deletion row
-    const hasDeletionRow = raw.some(
-      (item) =>
-        item.type?.toLowerCase().includes('delet') ||
-        item.data?.toLowerCase().includes('delet'),
-    );
-    const deletionAvailable: boolean | null = hasDeletionRow ? true : null;
-
-    const dataSafety: DataSafety = {
-      collected,
-      shared,
-      securityPractices,
-      deletionAvailable,
-    };
-
-    // If all arrays are empty and deletion unknown, treat as unavailable
-    const hasContent =
-      collected.length > 0 ||
-      shared.length > 0 ||
-      securityPractices.length > 0 ||
-      deletionAvailable !== null;
-
-    return { dataSafety, status: hasContent ? 'available' : 'unavailable' };
+    const { default: gplay } = await import('google-play-scraper');
+    const raw: unknown = await gplay.datasafety({ appId, lang: 'en' });
+    return adaptDataSafety(raw);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     return { dataSafety: empty, status: 'failed', error: message };

@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { retrieveAppData } from '../retrieval/retrievalOrchestrator';
-import { analyzePrivacyPolicy } from '../../../src/privacy-engine/policy-extraction';
+import { analyzePrivacyPolicy, policyTextRequiresSampling } from '../../../src/privacy-engine/policy-extraction';
 import { comparePrivacySources } from '../../../src/privacy-engine/comparison-engine';
 import { buildPrivacyReport } from '../../../src/privacy-engine/report-generator';
 
@@ -30,7 +30,8 @@ router.get('/:appId', async (req: Request, res: Response) => {
     try {
       policyAnalysis = await analyzePrivacyPolicy(data.privacyPolicy.text);
       aiAnalysisStatus = 'available';
-    } catch {
+    } catch (error) {
+      console.error('[Priv Lab] Policy analysis failed:', error instanceof Error ? error.message : 'Unknown analysis error');
       aiAnalysisStatus = 'failed';
     }
   }
@@ -40,8 +41,20 @@ router.get('/:appId', async (req: Request, res: Response) => {
     permissions: data.permissions,
     dataSafety: data.dataSafety,
     policyAnalysis,
-    sourceStatus,
+    sourceStatus: { ...sourceStatus, privacyPolicy: aiAnalysisStatus === 'available' ? sourceStatus.privacyPolicy : aiAnalysisStatus },
   });
+  if (policyAnalysis && data.privacyPolicy.text && policyTextRequiresSampling(data.privacyPolicy.text)) {
+    comparisons.push({
+      id: 'comparison-policy-selective',
+      type: 'INSUFFICIENT_INFORMATION',
+      severity: null,
+      title: 'Long policy analyzed selectively',
+      explanation: 'The policy exceeded the provider request limit, so analysis focused on privacy-relevant sections. Review the original policy for complete context.',
+      sources: ['privacyPolicy'],
+      evidenceIds: [],
+      status: 'insufficient_information',
+    });
+  }
   const report = buildPrivacyReport({
     app: data.app,
     permissions: data.permissions,
@@ -50,6 +63,7 @@ router.get('/:appId', async (req: Request, res: Response) => {
     sourceStatus,
     comparisons,
     policyUrl: data.privacyPolicy.url,
+    aiAnalysisStatus,
   });
   res.status(200).json(report);
 });
