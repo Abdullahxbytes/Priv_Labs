@@ -4,7 +4,6 @@
  * Never auto-selects the first result.
  */
 
-import gplay from 'google-play-scraper';
 import { AppSearchResult } from '../types';
 
 const MAX_RESULTS = 10;
@@ -21,6 +20,7 @@ export interface SearchResult {
  */
 export async function searchApps(query: string): Promise<SearchResult> {
   try {
+    const { default: gplay } = await import('google-play-scraper');
     const raw = await gplay.search({
       term: query,
       num: MAX_RESULTS,

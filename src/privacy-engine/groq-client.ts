@@ -20,7 +20,7 @@ function getModel(): string {
   return model;
 }
 
-export async function callGroq(prompt: string): Promise<string> {
+export async function callGroq(prompt: string, options: { json?: boolean; maxTokens?: number } = {}): Promise<string> {
   if (!prompt.trim()) {
     throw new Error("Groq request error: prompt must not be empty.");
   }
@@ -30,7 +30,8 @@ export async function callGroq(prompt: string): Promise<string> {
       model: getModel(),
       messages: [{ role: "user", content: prompt }],
       temperature: 0,
-      max_tokens: 1024,
+      max_tokens: options.maxTokens ?? 1024,
+      ...(options.json ? { response_format: { type: "json_object" as const } } : {}),
     });
 
     const content = response.choices[0]?.message?.content?.trim();

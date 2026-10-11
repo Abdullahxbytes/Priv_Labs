@@ -36,7 +36,7 @@ Downloads privacy-policy HTML, then uses **Cheerio** to remove irrelevant HTML a
 
 ### AI Policy Analyzer
 
-Uses **Groq API** with an open-source/open-weight model of **8B parameters or smaller** to analyze cleaned policy text and return structured JSON findings with supporting evidence and `found`, `not_found`, or `unclear` classifications. The exact model is **TO BE CONFIRMED** on the hackathon account. Validate JSON with **Zod** before normalization. It **does not generate the final score**.
+Uses **Groq API** with **OpenAI GPT-OSS 120B** (`openai/gpt-oss-120b`) to analyze cleaned policy text and return structured JSON findings with supporting evidence and `found`, `not_found`, or `unclear` classifications. Validate JSON with **Zod** before normalization. It **does not generate the final score**.
 
 ### Normalization Layer
 
@@ -74,7 +74,7 @@ flowchart TD
     PR <--> C
     PR --> T[Cheerio Text Cleaning]
     T --> AI[Groq API]
-    AI --> M[Open-weight model: maximum 8B]
+    AI --> M[OpenAI GPT-OSS 120B]
     M --> J[Structured JSON]
     J --> V[Zod Validation]
     V --> PF[Validated AI Policy Findings]
@@ -105,7 +105,7 @@ flowchart TD
 7. Backend retrieves Data Safety declarations.
 8. Backend retrieves the privacy-policy URL.
 9. Policy HTML is downloaded and cleaned using Cheerio.
-10. Clean text is sent through Groq API to the eligible model (exact model **TO BE CONFIRMED**).
+10. Clean text is sent through Groq API to `openai/gpt-oss-120b`.
 11. AI returns structured JSON findings and evidence; Zod validates output before use.
 12. Source terminology is normalized without losing provenance.
 13. Comparison engine compares available sources.
@@ -126,7 +126,7 @@ flowchart TD
     R --> D[Data Safety]
     R --> PP[Privacy Policy]
     PP --> T[Cheerio: Cleaned Policy Text]
-    T --> AI[Groq API: model maximum 8B]
+    T --> AI[Groq API: GPT-OSS 120B]
     AI --> J[Structured JSON]
     J --> V[Zod Validation]
     P --> N[Normalize Available Findings]
@@ -150,7 +150,7 @@ sequenceDiagram
     participant B as Express API
     participant P as google-play-scraper
     participant R as Policy Retriever / Cheerio
-    participant A as Groq API / Model maximum 8B
+    participant A as Groq API / GPT-OSS 120B
     participant C as Comparison Engine
     participant S as Scoring Engine
     U->>F: Search app name
@@ -238,7 +238,7 @@ Missing information is neither evidence of good privacy behavior nor an automati
 
 AI performs extraction, classification, evidence selection, and simple explanations. It must not invent missing facts, treat absence as proof, calculate the final privacy score, or claim runtime behavior has been observed. `not_found` means absent from the inspected text, not proof that a practice does not occur.
 
-**Provider: Groq API. Model: TO BE CONFIRMED. Maximum size: 8B parameters.** The model must be **open-source/open-weight**, used meaningfully for core policy analysis, not only cosmetic summaries. Confirm availability on the hackathon account before documenting the exact model name, model ID, and parameter count. Those details, prompt version, and exact Zod validation schema belong in `docs/AI_SPEC.md` (file not yet created); prompt and schema remain **TO BE FINALIZED**.
+**Provider: Groq API. Model: OpenAI GPT-OSS 120B (`openai/gpt-oss-120b`).** This open-weight model is used for core policy analysis, not cosmetic summaries. Model behavior, prompt details, and validation rules are documented in `docs/AI_SPEC.md`.
 
 ## 11. Scoring Boundary
 

@@ -1,650 +1,832 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Privacy Report — PrivacyLens</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    if (localStorage.getItem('theme') === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            obsidian: "#090D16",
-            cardDark: "#111827",
-            wellDark: "#0F172A",
-            borderDark: "#1E293B",
-            accentTeal: "#0D9488",
-            riskLow: "#059669",
-            riskMod: "#D97706",
-            riskHigh: "#EA580C",
-            riskCrit: "#E11D48",
-          },
-          fontFamily: {
-            sans: ["Geist", "sans-serif"],
-            mono: ["JetBrains Mono", "monospace"],
-          }
-        }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Report — PrivacyLens</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
       }
-    };
-  </script>
-</head>
-<body class="bg-slate-50 dark:bg-obsidian text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-accentTeal selection:text-white transition-colors duration-200 pb-16">
 
-  <!-- TOP APP BAR -->
-  <header class="sticky top-0 z-50 bg-white/80 dark:bg-[#090D16]/90 backdrop-blur-md border-b border-slate-200 dark:border-borderDark transition-colors">
-    <div class="max-w-4xl mx-auto h-16 px-4 sm:px-6 flex items-center justify-between gap-4">
-      
-      <a href="index.html" class="flex items-center gap-2.5 shrink-0">
-        <div class="w-9 h-9 rounded-xl bg-teal-50 dark:bg-wellDark border border-teal-200 dark:border-borderDark flex items-center justify-center text-accentTeal shadow-sm">
-          <i data-lucide="shield-check" class="w-5 h-5 text-accentTeal"></i>
-        </div>
-        <span class="font-sans font-bold text-lg tracking-tight text-slate-900 dark:text-white">PrivacyLens</span>
-      </a>
-
-      <!-- Right Controls: Back to Search & Theme Toggle -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <a href="index.html" class="h-9 px-3 sm:px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-cardDark dark:hover:bg-slate-800 border border-slate-200 dark:border-borderDark text-slate-700 dark:text-slate-300 font-sans text-xs font-medium flex items-center gap-1.5 transition-colors">
-          <i data-lucide="search" class="w-3.5 h-3.5"></i>
-          <span>Check Another App</span>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              obsidian: "#090D16",
+              cardDark: "#111827",
+              wellDark: "#0F172A",
+              borderDark: "#1E293B",
+              accentTeal: "#0D9488",
+              riskLow: "#059669",
+              riskMod: "#D97706",
+              riskHigh: "#EA580C",
+              riskCrit: "#E11D48",
+            },
+            fontFamily: {
+              sans: ["Geist", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"],
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body
+    class="bg-slate-50 dark:bg-obsidian text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-accentTeal selection:text-white transition-colors duration-200 pb-16"
+  >
+    <!-- TOP APP BAR -->
+    <header
+      class="sticky top-0 z-50 bg-white/80 dark:bg-[#090D16]/90 backdrop-blur-md border-b border-slate-200 dark:border-borderDark transition-colors"
+    >
+      <div class="max-w-4xl mx-auto h-16 px-4 sm:px-6 flex items-center justify-between gap-4">
+        <a href="index.html" class="flex items-center gap-2.5 shrink-0">
+          <div
+            class="w-9 h-9 rounded-xl bg-teal-50 dark:bg-wellDark border border-teal-200 dark:border-borderDark flex items-center justify-center text-accentTeal shadow-sm"
+          >
+            <i data-lucide="shield-check" class="w-5 h-5 text-accentTeal"></i>
+          </div>
+          <span class="font-sans font-bold text-lg tracking-tight text-slate-900 dark:text-white"
+            >PrivacyLens</span
+          >
         </a>
 
-        <button 
-          onclick="toggleTheme()" 
-          class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-cardDark dark:hover:bg-slate-800 border border-slate-200 dark:border-borderDark text-slate-600 dark:text-slate-300 transition-colors shadow-sm"
-          title="Toggle light/dark theme"
-          type="button"
-          aria-label="Toggle theme"
-        >
-          <i id="theme-icon-sun" data-lucide="sun" class="w-4 h-4 hidden"></i>
-          <i id="theme-icon-moon" data-lucide="moon" class="w-4 h-4"></i>
-        </button>
-      </div>
+        <!-- Right Controls: Back to Search & Theme Toggle -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <a
+            href="index.html"
+            class="h-9 px-3 sm:px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-cardDark dark:hover:bg-slate-800 border border-slate-200 dark:border-borderDark text-slate-700 dark:text-slate-300 font-sans text-xs font-medium flex items-center gap-1.5 transition-colors"
+          >
+            <i data-lucide="search" class="w-3.5 h-3.5"></i>
+            <span>Check Another App</span>
+          </a>
 
-    </div>
-  </header>
-
-  <!-- MAIN REPORT DOSSIER -->
-  <main class="w-full flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-
-    <!-- APP IDENTITY CARD -->
-    <div class="bg-white dark:bg-cardDark border border-slate-200 dark:border-borderDark rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div class="flex items-center gap-4 min-w-0">
-        <div id="app-icon-wrapper" class="w-14 h-14 rounded-2xl bg-teal-50 dark:bg-wellDark border border-teal-100 dark:border-borderDark flex items-center justify-center text-accentTeal shrink-0 overflow-hidden">
-          <i data-lucide="smartphone" class="w-7 h-7 text-accentTeal"></i>
+          <button
+            onclick="toggleTheme()"
+            class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-cardDark dark:hover:bg-slate-800 border border-slate-200 dark:border-borderDark text-slate-600 dark:text-slate-300 transition-colors shadow-sm"
+            title="Toggle light/dark theme"
+            type="button"
+            aria-label="Toggle theme"
+          >
+            <i id="theme-icon-sun" data-lucide="sun" class="w-4 h-4 hidden"></i>
+            <i id="theme-icon-moon" data-lucide="moon" class="w-4 h-4"></i>
+          </button>
         </div>
-        <div class="min-w-0">
-          <div class="flex items-center gap-2 flex-wrap">
-            <h1 id="app-name-heading" class="font-sans font-bold text-xl text-slate-900 dark:text-white truncate">Loading App...</h1>
-            <a id="store-link" href="#" target="_blank" rel="noopener noreferrer" class="hidden text-xs text-accentTeal hover:underline flex items-center gap-1">
-              <span>Play Store</span>
-              <i data-lucide="external-link" class="w-3 h-3"></i>
-            </a>
+      </div>
+    </header>
+
+    <!-- MAIN REPORT DOSSIER -->
+    <main class="w-full flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+      <!-- APP IDENTITY CARD -->
+      <div
+        class="bg-white dark:bg-cardDark border border-slate-200 dark:border-borderDark rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      >
+        <div class="flex items-center gap-4 min-w-0">
+          <div
+            id="app-icon-wrapper"
+            class="w-14 h-14 rounded-2xl bg-teal-50 dark:bg-wellDark border border-teal-100 dark:border-borderDark flex items-center justify-center text-accentTeal shrink-0 overflow-hidden"
+          >
+            <i data-lucide="smartphone" class="w-7 h-7 text-accentTeal"></i>
           </div>
-          <p id="app-meta-line" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
-            Please wait...
-          </p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
-        <button id="btn-export-json" type="button" class="h-8 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-wellDark dark:hover:bg-slate-800 border border-slate-200 dark:border-borderDark text-slate-700 dark:text-slate-300 text-xs font-mono flex items-center gap-1.5 transition-colors">
-          <i data-lucide="download" class="w-3.5 h-3.5 text-accentTeal"></i>
-          <span>Save Report JSON</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- SOURCE LIMITATION BANNER (Conditionally displayed if a source is unavailable/failed) -->
-    <div id="source-limitation-banner" class="hidden p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 text-xs text-amber-800 dark:text-amber-300 space-y-1">
-      <div class="flex items-center gap-2 font-bold">
-        <i data-lucide="info" class="w-4 h-4 text-amber-600 shrink-0"></i>
-        <span>Data Coverage Notice</span>
-      </div>
-      <p id="source-limitation-text" class="leading-relaxed text-slate-600 dark:text-slate-400">
-        Some disclosures could not be retrieved from the developer. Missing sources are not proof of privacy or safety; this report reflects available information only.
-      </p>
-    </div>
-
-    <!-- PRIMARY SCORE & SOURCE INSPECTION CARD -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch">
-      
-      <!-- Privacy Score Gauge (5 Cols) -->
-      <div class="md:col-span-5 p-5 rounded-2xl bg-white dark:bg-cardDark border border-slate-200 dark:border-borderDark flex flex-col justify-between shadow-sm">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Privacy Rating</span>
-          <span id="risk-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold border">
-            Evaluating...
-          </span>
-        </div>
-
-        <div class="flex items-center gap-5 my-3">
-          <div class="relative w-24 h-24 shrink-0">
-            <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
-              <circle class="text-slate-100 dark:text-wellDark" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-width="10"></circle>
-              <circle id="score-gauge-ring" class="text-amber-500" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.32" stroke-dashoffset="65" stroke-linecap="round" stroke-width="10"></circle>
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center font-mono">
-              <span id="score-number-display" class="text-2xl font-bold text-slate-900 dark:text-white">--</span>
-              <span class="text-[10px] text-slate-400">/ 100</span>
-            </div>
-          </div>
-
           <div class="min-w-0">
-            <h2 id="score-title-display" class="font-sans font-bold text-sm text-slate-900 dark:text-white">Computing Score</h2>
-            <p id="score-desc-display" class="font-sans text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-              Evaluating requested capabilities against declared disclosures.
+            <div class="flex items-center gap-2 flex-wrap">
+              <h1
+                id="app-name-heading"
+                class="font-sans font-bold text-xl text-slate-900 dark:text-white truncate"
+              >
+                Loading App...
+              </h1>
+              <a
+                id="store-link"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hidden text-xs text-accentTeal hover:underline flex items-center gap-1"
+              >
+                <span>Play Store</span>
+                <i data-lucide="external-link" class="w-3 h-3"></i>
+              </a>
+            </div>
+            <p
+              id="app-meta-line"
+              class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate"
+            >
+              Please wait...
             </p>
           </div>
         </div>
 
-        <div class="pt-2 border-t border-slate-100 dark:border-borderDark text-[11px] text-slate-400 flex items-center justify-between">
-          <span>Higher score = Better privacy</span>
-          <span class="font-mono text-emerald-600 font-semibold">100 Max</span>
+        <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+          <button
+            id="btn-export-json"
+            type="button"
+            class="h-8 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-wellDark dark:hover:bg-slate-800 border border-slate-200 dark:border-borderDark text-slate-700 dark:text-slate-300 text-xs font-mono flex items-center gap-1.5 transition-colors"
+          >
+            <i data-lucide="download" class="w-3.5 h-3.5 text-accentTeal"></i>
+            <span>Save Report JSON</span>
+          </button>
         </div>
       </div>
 
-      <!-- Source Status Overview (7 Cols) -->
-      <div class="md:col-span-7 p-5 rounded-2xl bg-white dark:bg-cardDark border border-slate-200 dark:border-borderDark flex flex-col justify-between shadow-sm">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Sources Inspected</span>
-          <span id="source-summary-pill" class="text-[11px] font-medium text-slate-500">Checking sources...</span>
+      <!-- SOURCE LIMITATION BANNER (Conditionally displayed if a source is unavailable/failed) -->
+      <div
+        id="source-limitation-banner"
+        class="hidden p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 text-xs text-amber-800 dark:text-amber-300 space-y-1"
+      >
+        <div class="flex items-center gap-2 font-bold">
+          <i data-lucide="info" class="w-4 h-4 text-amber-600 shrink-0"></i>
+          <span>Data Coverage Notice</span>
         </div>
-
-        <!-- 4-Source Status Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          
-          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark">
-            <p class="text-[10px] text-slate-400">Permissions</p>
-            <p id="status-permissions-val" class="font-bold text-xs text-slate-900 dark:text-white mt-0.5 truncate">Checking</p>
-            <p id="status-permissions-tag" class="text-[10px] text-accentTeal mt-0.5">Source 1</p>
-          </div>
-
-          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark">
-            <p class="text-[10px] text-slate-400">Store Safety</p>
-            <p id="status-dataSafety-val" class="font-bold text-xs text-slate-900 dark:text-white mt-0.5 truncate">Checking</p>
-            <p id="status-dataSafety-tag" class="text-[10px] text-accentTeal mt-0.5">Source 2</p>
-          </div>
-
-          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark">
-            <p class="text-[10px] text-slate-400">Privacy Policy</p>
-            <p id="status-policy-val" class="font-bold text-xs text-slate-900 dark:text-white mt-0.5 truncate">Checking</p>
-            <p id="status-policy-tag" class="text-[10px] text-accentTeal mt-0.5">Source 3</p>
-          </div>
-
-          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark">
-            <p class="text-[10px] text-slate-400">AI Analysis</p>
-            <p id="status-ai-val" class="font-bold text-xs text-slate-900 dark:text-white mt-0.5 truncate">Checking</p>
-            <p id="status-ai-tag" class="text-[10px] text-accentTeal mt-0.5">Source 4</p>
-          </div>
-
-        </div>
-
-        <!-- Consumer Takeaways from Summary -->
-        <div id="quick-summary-bullets" class="pt-3 mt-1 border-t border-slate-100 dark:border-borderDark space-y-1 text-xs text-slate-600 dark:text-slate-400">
-          <div class="flex items-center gap-1.5 truncate">
-            <i data-lucide="check" class="w-3.5 h-3.5 text-accentTeal shrink-0"></i>
-            <span>Loading key findings...</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- MISMATCH / INCONSISTENCY CALLOUT (Rendered if report has mismatches) -->
-    <div id="mismatches-container" class="space-y-3"></div>
-
-    <!-- 2-COLUMN BREAKDOWN: CAPABILITIES vs SHARING -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-      
-      <!-- Left Column: Requested Phone Capabilities (Permissions) -->
-      <div class="bg-white dark:bg-cardDark border border-slate-200 dark:border-borderDark rounded-2xl p-5 shadow-sm space-y-3">
-        <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-borderDark">
-          <div class="flex items-center gap-2">
-            <i data-lucide="smartphone" class="w-4 h-4 text-accentTeal"></i>
-            <h3 class="font-sans font-bold text-sm text-slate-900 dark:text-white">What can it access?</h3>
-          </div>
-          <span class="text-[11px] text-slate-400">Capabilities</span>
-        </div>
-        <p class="text-[11px] text-slate-500 dark:text-slate-400">
-          A permission allows access to a phone feature; it is not proof of data collection.
+        <p id="source-limitation-text" class="leading-relaxed text-slate-600 dark:text-slate-400">
+          Some disclosures could not be retrieved from the developer. Missing sources are not proof
+          of privacy or safety; this report reflects available information only.
         </p>
+      </div>
 
-        <div id="permissions-list" class="space-y-2 text-xs">
+      <!-- PRIMARY SCORE & SOURCE INSPECTION CARD -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch">
+        <!-- Privacy Score Gauge (5 Cols) -->
+        <div
+          class="md:col-span-5 p-5 rounded-2xl bg-white dark:bg-cardDark border border-slate-200 dark:border-borderDark flex flex-col justify-between shadow-sm"
+        >
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider"
+              >Privacy Rating</span
+            >
+            <span id="risk-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold border">
+              Evaluating...
+            </span>
+          </div>
+
+          <div class="flex items-center gap-5 my-3">
+            <div class="relative w-24 h-24 shrink-0">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                <circle
+                  class="text-slate-100 dark:text-wellDark"
+                  cx="50"
+                  cy="50"
+                  fill="transparent"
+                  r="40"
+                  stroke="currentColor"
+                  stroke-width="10"
+                ></circle>
+                <circle
+                  id="score-gauge-ring"
+                  class="text-amber-500"
+                  cx="50"
+                  cy="50"
+                  fill="transparent"
+                  r="40"
+                  stroke="currentColor"
+                  stroke-dasharray="251.32"
+                  stroke-dashoffset="65"
+                  stroke-linecap="round"
+                  stroke-width="10"
+                ></circle>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center font-mono">
+                <span
+                  id="score-number-display"
+                  class="text-2xl font-bold text-slate-900 dark:text-white"
+                  >--</span
+                >
+                <span class="text-[10px] text-slate-400">/ 100</span>
+              </div>
+            </div>
+
+            <div class="min-w-0">
+              <h2
+                id="score-title-display"
+                class="font-sans font-bold text-sm text-slate-900 dark:text-white"
+              >
+                Computing Score
+              </h2>
+              <p
+                id="score-desc-display"
+                class="font-sans text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed"
+              >
+                Evaluating requested capabilities against declared disclosures.
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="pt-2 border-t border-slate-100 dark:border-borderDark text-[11px] text-slate-400 flex items-center justify-between"
+          >
+            <span>Higher score = Better privacy</span>
+            <span class="font-mono text-emerald-600 font-semibold">100 Max</span>
+          </div>
+        </div>
+
+        <!-- Source Status Overview (7 Cols) -->
+        <div
+          class="md:col-span-7 p-5 rounded-2xl bg-white dark:bg-cardDark border border-slate-200 dark:border-borderDark flex flex-col justify-between shadow-sm"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider"
+              >Sources Inspected</span
+            >
+            <span id="source-summary-pill" class="text-[11px] font-medium text-slate-500"
+              >Checking sources...</span
+            >
+          </div>
+
+          <!-- 4-Source Status Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div
+              class="p-2.5 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark"
+            >
+              <p class="text-[10px] text-slate-400">Permissions</p>
+              <p
+                id="status-permissions-val"
+                class="font-bold text-xs text-slate-900 dark:text-white mt-0.5 truncate"
+              >
+                Checking
+              </p>
+              <p id="status-permissions-tag" class="text-[10px] text-accentTeal mt-0.5">Source 1</p>
+            </div>
+
+            <div
+              class="p-2.5 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark"
+            >
+              <p class="text-[10px] text-slate-400">Store Safety</p>
+              <p
+                id="status-dataSafety-val"
+                class="font-bold text-xs text-slate-900 dark:text-white mt-0.5 truncate"
+              >
+                Checking
+              </p>
+              <p id="status-dataSafety-tag" class="text-[10px] text-accentTeal mt-0.5">Source 2</p>
+            </div>
+
+            <div
+              class="p-2.5 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark"
+            >
+              <p class="text-[10px] text-slate-400">Privacy Policy</p>
+              <p
+                id="status-policy-val"
+                class="font-bold text-xs text-slate-900 dark:text-white mt-0.5 truncate"
+              >
+                Checking
+              </p>
+              <p id="status-policy-tag" class="text-[10px] text-accentTeal mt-0.5">Source 3</p>
+            </div>
+
+            <div
+              class="p-2.5 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark"
+            >
+              <p class="text-[10px] text-slate-400">AI Analysis</p>
+              <p
+                id="status-ai-val"
+                class="font-bold text-xs text-slate-900 dark:text-white mt-0.5 truncate"
+              >
+                Checking
+              </p>
+              <p id="status-ai-tag" class="text-[10px] text-accentTeal mt-0.5">Source 4</p>
+            </div>
+          </div>
+
+          <!-- Consumer Takeaways from Summary -->
+          <div
+            id="quick-summary-bullets"
+            class="pt-3 mt-1 border-t border-slate-100 dark:border-borderDark space-y-1 text-xs text-slate-600 dark:text-slate-400"
+          >
+            <div class="flex items-center gap-1.5 truncate">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-accentTeal shrink-0"></i>
+              <span>Loading key findings...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MISMATCH / INCONSISTENCY CALLOUT (Rendered if report has mismatches) -->
+      <div id="mismatches-container" class="space-y-3"></div>
+
+      <!-- 2-COLUMN BREAKDOWN: CAPABILITIES vs SHARING -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <!-- Left Column: Requested Phone Capabilities (Permissions) -->
+        <div
+          class="bg-white dark:bg-cardDark border border-slate-200 dark:border-borderDark rounded-2xl p-5 shadow-sm space-y-3"
+        >
+          <div
+            class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-borderDark"
+          >
+            <div class="flex items-center gap-2">
+              <i data-lucide="smartphone" class="w-4 h-4 text-accentTeal"></i>
+              <h3 class="font-sans font-bold text-sm text-slate-900 dark:text-white">
+                What can it access?
+              </h3>
+            </div>
+            <span class="text-[11px] text-slate-400">Capabilities</span>
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">
+            A permission allows access to a phone feature; it is not proof of data collection.
+          </p>
+
+          <div id="permissions-list" class="space-y-2 text-xs">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Right Column: Who gets personal data (Data Sharing & Third Parties) -->
+        <div
+          class="bg-white dark:bg-cardDark border border-slate-200 dark:border-borderDark rounded-2xl p-5 shadow-sm space-y-3"
+        >
+          <div
+            class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-borderDark"
+          >
+            <div class="flex items-center gap-2">
+              <i data-lucide="share-2" class="w-4 h-4 text-accentTeal"></i>
+              <h3 class="font-sans font-bold text-sm text-slate-900 dark:text-white">
+                Who gets your data?
+              </h3>
+            </div>
+            <span class="text-[11px] text-slate-400">Third Parties</span>
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">
+            Disclosed sharing recipients based on available store and policy statements.
+          </p>
+
+          <div id="sharing-list" class="space-y-2 text-xs">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- DATA COLLECTED SECTION -->
+      <div
+        class="bg-white dark:bg-cardDark border border-slate-200 dark:border-borderDark rounded-2xl p-5 shadow-sm space-y-3"
+      >
+        <div
+          class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-borderDark"
+        >
+          <div class="flex items-center gap-2">
+            <i data-lucide="database" class="w-4 h-4 text-accentTeal"></i>
+            <h3 class="font-sans font-bold text-sm text-slate-900 dark:text-white">
+              Disclosed Data Collection
+            </h3>
+          </div>
+          <span class="text-[11px] text-slate-400">Store & Policy</span>
+        </div>
+
+        <div id="collection-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <!-- Populated dynamically -->
         </div>
       </div>
 
-      <!-- Right Column: Who gets personal data (Data Sharing & Third Parties) -->
-      <div class="bg-white dark:bg-cardDark border border-slate-200 dark:border-borderDark rounded-2xl p-5 shadow-sm space-y-3">
-        <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-borderDark">
-          <div class="flex items-center gap-2">
-            <i data-lucide="share-2" class="w-4 h-4 text-accentTeal"></i>
-            <h3 class="font-sans font-bold text-sm text-slate-900 dark:text-white">Who gets your data?</h3>
-          </div>
-          <span class="text-[11px] text-slate-400">Third Parties</span>
+      <!-- POSITIVE PRACTICES CARD -->
+      <div
+        class="bg-emerald-50/50 dark:bg-cardDark border border-emerald-200 dark:border-borderDark rounded-2xl p-5 shadow-sm space-y-3"
+      >
+        <div
+          class="flex items-center gap-2 text-emerald-800 dark:text-emerald-400 font-bold text-sm"
+        >
+          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+          <span>Documented Protections & Safeguards</span>
         </div>
-        <p class="text-[11px] text-slate-500 dark:text-slate-400">
-          Disclosed sharing recipients based on available store and policy statements.
-        </p>
 
-        <div id="sharing-list" class="space-y-2 text-xs">
+        <div id="positive-findings-list" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
           <!-- Populated dynamically -->
         </div>
       </div>
+    </main>
 
-    </div>
+    <!-- NO FOOTER -->
 
-    <!-- DATA COLLECTED SECTION -->
-    <div class="bg-white dark:bg-cardDark border border-slate-200 dark:border-borderDark rounded-2xl p-5 shadow-sm space-y-3">
-      <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-borderDark">
-        <div class="flex items-center gap-2">
-          <i data-lucide="database" class="w-4 h-4 text-accentTeal"></i>
-          <h3 class="font-sans font-bold text-sm text-slate-900 dark:text-white">Disclosed Data Collection</h3>
-        </div>
-        <span class="text-[11px] text-slate-400">Store & Policy</span>
-      </div>
+    <script type="module">
+      import { getReportForApp, mockPrivacyReport } from "./mock-data.js";
 
-      <div id="collection-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-        <!-- Populated dynamically -->
-      </div>
-    </div>
+      const urlParams = new URLSearchParams(window.location.search);
+      const appId = urlParams.get("appId") || "com.spotify.music";
+      const appName = urlParams.get("name") || "";
+      const appIcon = urlParams.get("icon") || "";
+      const appDev = urlParams.get("dev") || "";
+      const appRating = urlParams.get("rating") || "";
+      const appCat = urlParams.get("cat") || "";
 
-    <!-- POSITIVE PRACTICES CARD -->
-    <div class="bg-emerald-50/50 dark:bg-cardDark border border-emerald-200 dark:border-borderDark rounded-2xl p-5 shadow-sm space-y-3">
-      <div class="flex items-center gap-2 text-emerald-800 dark:text-emerald-400 font-bold text-sm">
-        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
-        <span>Documented Protections & Safeguards</span>
-      </div>
+      let currentReport = null;
 
-      <div id="positive-findings-list" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-        <!-- Populated dynamically -->
-      </div>
-    </div>
-
-  </main>
-
-  <!-- NO FOOTER -->
-
-  <script type="module">
-    import { getReportForApp, mockPrivacyReport } from './mock-data.js';
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const appId = urlParams.get('appId') || 'com.spotify.music';
-    const appName = urlParams.get('name') || '';
-    const appIcon = urlParams.get('icon') || '';
-    const appDev = urlParams.get('dev') || '';
-    const appRating = urlParams.get('rating') || '';
-    const appCat = urlParams.get('cat') || '';
-
-    let currentReport = null;
-
-    async function loadReport() {
-      // 1. First prepare base report from centralized fixture matching the frozen contract
-      let report = getReportForApp(appId, {
-        name: appName,
-        developer: appDev,
-        icon: appIcon,
-        rating: appRating ? parseFloat(appRating) : null,
-        category: appCat
-      });
-
-      // 2. Try fetching from live backend analyze endpoint (Member 3 planned endpoint)
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000);
-        const res = await fetch(`http://localhost:4000/api/analyze/${encodeURIComponent(appId)}`, {
-          signal: controller.signal
+      async function loadReport() {
+        // 1. First prepare base report from centralized fixture matching the frozen contract
+        let report = getReportForApp(appId, {
+          name: appName,
+          developer: appDev,
+          icon: appIcon,
+          rating: appRating ? parseFloat(appRating) : null,
+          category: appCat,
         });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-          const liveData = await res.json();
-          if (liveData && liveData.app && liveData.score !== undefined) {
-            report = liveData;
+
+        // 2. Try fetching from live backend analyze endpoint (Member 3 planned endpoint)
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 2000);
+          const res = await fetch(
+            `http://localhost:4000/api/analyze/${encodeURIComponent(appId)}`,
+            {
+              signal: controller.signal,
+            },
+          );
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const liveData = await res.json();
+            if (liveData && liveData.app && liveData.score !== undefined) {
+              report = liveData;
+            }
+          }
+        } catch (e) {
+          // Expected until Member 3 completes /api/analyze; fallback is ready
+        }
+
+        currentReport = report;
+        renderReport(report);
+        lucide.createIcons();
+      }
+
+      function renderReport(r) {
+        // 1. App Identity
+        const app = r.app || {};
+        const name = app.name || app.title || app.appId || "Unknown App";
+        const dev = app.developer || "Developer not listed";
+        const rating =
+          typeof app.rating === "number" && !isNaN(app.rating)
+            ? `${app.rating.toFixed(1)} ★`
+            : null;
+        const cat = app.category || null;
+
+        document.getElementById("app-name-heading").textContent = name;
+        document.title = `Privacy Report — ${name} | PrivacyLens`;
+
+        let metaParts = [`By ${dev}`];
+        if (rating) metaParts.push(rating);
+        if (cat) metaParts.push(cat);
+        document.getElementById("app-meta-line").textContent = metaParts.join(" • ");
+
+        const iconWrap = document.getElementById("app-icon-wrapper");
+        if (app.icon) {
+          iconWrap.innerHTML = `<img src="${app.icon}" alt="${name}" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'smartphone\\' class=\\'w-7 h-7 text-accentTeal\\'></i>'; lucide.createIcons();"/>`;
+        } else {
+          iconWrap.innerHTML = '<i data-lucide="smartphone" class="w-7 h-7 text-accentTeal"></i>';
+        }
+
+        if (app.storeUrl) {
+          const storeLink = document.getElementById("store-link");
+          storeLink.href = app.storeUrl;
+          storeLink.classList.remove("hidden");
+        }
+
+        // 2. Score & Risk Level
+        const score = typeof r.score === "number" ? Math.round(r.score) : 50;
+        const risk = (r.riskLevel || "MODERATE").toUpperCase();
+
+        document.getElementById("score-number-display").textContent = score;
+
+        // Circle circumference is 2 * PI * 40 = 251.32
+        const circumference = 251.32;
+        const offset = circumference - (score / 100) * circumference;
+        const ring = document.getElementById("score-gauge-ring");
+        ring.style.strokeDashoffset = offset;
+
+        const riskBadge = document.getElementById("risk-badge");
+        const scoreTitle = document.getElementById("score-title-display");
+        const scoreDesc = document.getElementById("score-desc-display");
+
+        if (score >= 75) {
+          ring.setAttribute("class", "text-emerald-500");
+          riskBadge.className =
+            "px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300";
+          riskBadge.textContent = "Good (Low Risk)";
+          scoreTitle.textContent = "High Privacy Transparency";
+          scoreDesc.textContent =
+            "Disclosures are comprehensive with strong user protections documented.";
+        } else if (score >= 50) {
+          ring.setAttribute("class", "text-amber-500");
+          riskBadge.className =
+            "px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300";
+          riskBadge.textContent = "Fair (Moderate Risk)";
+          scoreTitle.textContent = "Mostly Disclosed";
+          scoreDesc.textContent =
+            "Most practices are declared, though some sharing or mismatches were noted.";
+        } else if (score >= 25) {
+          ring.setAttribute("class", "text-orange-500");
+          riskBadge.className =
+            "px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-300";
+          riskBadge.textContent = "Elevated Risk";
+          scoreTitle.textContent = "Extensive Data Access";
+          scoreDesc.textContent =
+            "High volume of sensitive permissions requested with active third-party sharing.";
+        } else {
+          ring.setAttribute("class", "text-rose-500");
+          riskBadge.className =
+            "px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300";
+          riskBadge.textContent = "High Risk";
+          scoreTitle.textContent = "Substantial Inconsistencies";
+          scoreDesc.textContent =
+            "Significant gaps or inconsistencies between permissions and disclosures.";
+        }
+
+        // 3. Source Status & Limitation Notice
+        const ss = r.sourceStatus || {};
+        const formatStatus = (val) => {
+          if (!val || val === "unavailable")
+            return { label: "Unavailable", color: "text-slate-400" };
+          if (val === "failed") return { label: "Check Failed", color: "text-amber-600" };
+          if (val === "cached") return { label: "Cached", color: "text-teal-600" };
+          return { label: "Available", color: "text-emerald-600" };
+        };
+
+        const permStat = formatStatus(ss.permissions);
+        const dataStat = formatStatus(ss.dataSafety);
+        const polStat = formatStatus(ss.privacyPolicy);
+        const aiStat = formatStatus(ss.aiAnalysis);
+
+        document.getElementById("status-permissions-val").textContent = permStat.label;
+        document.getElementById("status-permissions-val").className =
+          `font-bold text-xs ${permStat.color} mt-0.5 truncate`;
+
+        document.getElementById("status-dataSafety-val").textContent = dataStat.label;
+        document.getElementById("status-dataSafety-val").className =
+          `font-bold text-xs ${dataStat.color} mt-0.5 truncate`;
+
+        document.getElementById("status-policy-val").textContent = polStat.label;
+        document.getElementById("status-policy-val").className =
+          `font-bold text-xs ${polStat.color} mt-0.5 truncate`;
+
+        document.getElementById("status-ai-val").textContent = aiStat.label;
+        document.getElementById("status-ai-val").className =
+          `font-bold text-xs ${aiStat.color} mt-0.5 truncate`;
+
+        const allAvailable = [ss.permissions, ss.dataSafety, ss.privacyPolicy, ss.aiAnalysis].every(
+          (v) => v === "available" || v === "cached",
+        );
+        const limitationBanner = document.getElementById("source-limitation-banner");
+        const limitationText = document.getElementById("source-limitation-text");
+        const sourceSummaryPill = document.getElementById("source-summary-pill");
+
+        if (allAvailable) {
+          sourceSummaryPill.textContent = "All 4 Sources Available";
+          sourceSummaryPill.className = "text-[11px] text-emerald-600 font-semibold";
+          limitationBanner.classList.add("hidden");
+        } else {
+          sourceSummaryPill.textContent = "Partial Source Coverage";
+          sourceSummaryPill.className = "text-[11px] text-amber-600 font-semibold";
+          limitationBanner.classList.remove("hidden");
+
+          if (ss.privacyPolicy === "unavailable" || ss.privacyPolicy === "failed") {
+            limitationText.textContent =
+              "The developer's official privacy policy was unavailable or could not be retrieved. Analysis is based solely on Google Play Store listings and requested app permissions. Missing disclosures are not proof of privacy.";
+          } else {
+            limitationText.textContent =
+              "Some data sources were incomplete during inspection. The report displays available findings with full attribution.";
           }
         }
-      } catch (e) {
-        // Expected until Member 3 completes /api/analyze; fallback is ready
-      }
 
-      currentReport = report;
-      renderReport(report);
-      lucide.createIcons();
-    }
-
-    function renderReport(r) {
-      // 1. App Identity
-      const app = r.app || {};
-      const name = app.name || app.title || app.appId || 'Unknown App';
-      const dev = app.developer || 'Developer not listed';
-      const rating = typeof app.rating === 'number' && !isNaN(app.rating) ? `${app.rating.toFixed(1)} ★` : null;
-      const cat = app.category || null;
-
-      document.getElementById('app-name-heading').textContent = name;
-      document.title = `Privacy Report — ${name} | PrivacyLens`;
-
-      let metaParts = [`By ${dev}`];
-      if (rating) metaParts.push(rating);
-      if (cat) metaParts.push(cat);
-      document.getElementById('app-meta-line').textContent = metaParts.join(' • ');
-
-      const iconWrap = document.getElementById('app-icon-wrapper');
-      if (app.icon) {
-        iconWrap.innerHTML = `<img src="${app.icon}" alt="${name}" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'smartphone\\' class=\\'w-7 h-7 text-accentTeal\\'></i>'; lucide.createIcons();"/>`;
-      } else {
-        iconWrap.innerHTML = '<i data-lucide="smartphone" class="w-7 h-7 text-accentTeal"></i>';
-      }
-
-      if (app.storeUrl) {
-        const storeLink = document.getElementById('store-link');
-        storeLink.href = app.storeUrl;
-        storeLink.classList.remove('hidden');
-      }
-
-      // 2. Score & Risk Level
-      const score = typeof r.score === 'number' ? Math.round(r.score) : 50;
-      const risk = (r.riskLevel || 'MODERATE').toUpperCase();
-
-      document.getElementById('score-number-display').textContent = score;
-
-      // Circle circumference is 2 * PI * 40 = 251.32
-      const circumference = 251.32;
-      const offset = circumference - (score / 100) * circumference;
-      const ring = document.getElementById('score-gauge-ring');
-      ring.style.strokeDashoffset = offset;
-
-      const riskBadge = document.getElementById('risk-badge');
-      const scoreTitle = document.getElementById('score-title-display');
-      const scoreDesc = document.getElementById('score-desc-display');
-
-      if (score >= 75) {
-        ring.setAttribute('class', 'text-emerald-500');
-        riskBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300';
-        riskBadge.textContent = 'Good (Low Risk)';
-        scoreTitle.textContent = 'High Privacy Transparency';
-        scoreDesc.textContent = 'Disclosures are comprehensive with strong user protections documented.';
-      } else if (score >= 50) {
-        ring.setAttribute('class', 'text-amber-500');
-        riskBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300';
-        riskBadge.textContent = 'Fair (Moderate Risk)';
-        scoreTitle.textContent = 'Mostly Disclosed';
-        scoreDesc.textContent = 'Most practices are declared, though some sharing or mismatches were noted.';
-      } else if (score >= 25) {
-        ring.setAttribute('class', 'text-orange-500');
-        riskBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-300';
-        riskBadge.textContent = 'Elevated Risk';
-        scoreTitle.textContent = 'Extensive Data Access';
-        scoreDesc.textContent = 'High volume of sensitive permissions requested with active third-party sharing.';
-      } else {
-        ring.setAttribute('class', 'text-rose-500');
-        riskBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300';
-        riskBadge.textContent = 'High Risk';
-        scoreTitle.textContent = 'Substantial Inconsistencies';
-        scoreDesc.textContent = 'Significant gaps or inconsistencies between permissions and disclosures.';
-      }
-
-      // 3. Source Status & Limitation Notice
-      const ss = r.sourceStatus || {};
-      const formatStatus = (val) => {
-        if (!val || val === 'unavailable') return { label: 'Unavailable', color: 'text-slate-400' };
-        if (val === 'failed') return { label: 'Check Failed', color: 'text-amber-600' };
-        if (val === 'cached') return { label: 'Cached', color: 'text-teal-600' };
-        return { label: 'Available', color: 'text-emerald-600' };
-      };
-
-      const permStat = formatStatus(ss.permissions);
-      const dataStat = formatStatus(ss.dataSafety);
-      const polStat = formatStatus(ss.privacyPolicy);
-      const aiStat = formatStatus(ss.aiAnalysis);
-
-      document.getElementById('status-permissions-val').textContent = permStat.label;
-      document.getElementById('status-permissions-val').className = `font-bold text-xs ${permStat.color} mt-0.5 truncate`;
-
-      document.getElementById('status-dataSafety-val').textContent = dataStat.label;
-      document.getElementById('status-dataSafety-val').className = `font-bold text-xs ${dataStat.color} mt-0.5 truncate`;
-
-      document.getElementById('status-policy-val').textContent = polStat.label;
-      document.getElementById('status-policy-val').className = `font-bold text-xs ${polStat.color} mt-0.5 truncate`;
-
-      document.getElementById('status-ai-val').textContent = aiStat.label;
-      document.getElementById('status-ai-val').className = `font-bold text-xs ${aiStat.color} mt-0.5 truncate`;
-
-      const allAvailable = [ss.permissions, ss.dataSafety, ss.privacyPolicy, ss.aiAnalysis].every(v => v === 'available' || v === 'cached');
-      const limitationBanner = document.getElementById('source-limitation-banner');
-      const limitationText = document.getElementById('source-limitation-text');
-      const sourceSummaryPill = document.getElementById('source-summary-pill');
-
-      if (allAvailable) {
-        sourceSummaryPill.textContent = "All 4 Sources Available";
-        sourceSummaryPill.className = "text-[11px] text-emerald-600 font-semibold";
-        limitationBanner.classList.add('hidden');
-      } else {
-        sourceSummaryPill.textContent = "Partial Source Coverage";
-        sourceSummaryPill.className = "text-[11px] text-amber-600 font-semibold";
-        limitationBanner.classList.remove('hidden');
-
-        if (ss.privacyPolicy === 'unavailable' || ss.privacyPolicy === 'failed') {
-          limitationText.textContent = "The developer's official privacy policy was unavailable or could not be retrieved. Analysis is based solely on Google Play Store listings and requested app permissions. Missing disclosures are not proof of privacy.";
+        // 4. Quick Summary Bullets
+        const summaryContainer = document.getElementById("quick-summary-bullets");
+        summaryContainer.innerHTML = "";
+        const summaryItems = Array.isArray(r.summary) ? r.summary : [];
+        if (summaryItems.length > 0) {
+          summaryItems.slice(0, 4).forEach((item) => {
+            const div = document.createElement("div");
+            div.className = "flex items-start gap-1.5 text-xs text-slate-600 dark:text-slate-400";
+            div.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-accentTeal shrink-0 mt-0.5"></i><span>${item}</span>`;
+            summaryContainer.appendChild(div);
+          });
         } else {
-          limitationText.textContent = "Some data sources were incomplete during inspection. The report displays available findings with full attribution.";
+          summaryContainer.innerHTML = `<p class="text-xs text-slate-400">Analysis complete. See detailed findings below.</p>`;
         }
-      }
 
-      // 4. Quick Summary Bullets
-      const summaryContainer = document.getElementById('quick-summary-bullets');
-      summaryContainer.innerHTML = '';
-      const summaryItems = Array.isArray(r.summary) ? r.summary : [];
-      if (summaryItems.length > 0) {
-        summaryItems.slice(0, 4).forEach(item => {
-          const div = document.createElement('div');
-          div.className = "flex items-start gap-1.5 text-xs text-slate-600 dark:text-slate-400";
-          div.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-accentTeal shrink-0 mt-0.5"></i><span>${item}</span>`;
-          summaryContainer.appendChild(div);
-        });
-      } else {
-        summaryContainer.innerHTML = `<p class="text-xs text-slate-400">Analysis complete. See detailed findings below.</p>`;
-      }
+        // 5. Mismatches & Inconsistencies
+        const mismatchesContainer = document.getElementById("mismatches-container");
+        mismatchesContainer.innerHTML = "";
+        const mismatches = Array.isArray(r.mismatches) ? r.mismatches : [];
 
-      // 5. Mismatches & Inconsistencies
-      const mismatchesContainer = document.getElementById('mismatches-container');
-      mismatchesContainer.innerHTML = '';
-      const mismatches = Array.isArray(r.mismatches) ? r.mismatches : [];
+        if (mismatches.length > 0) {
+          mismatches.forEach((m) => {
+            const card = document.createElement("div");
+            card.className =
+              "bg-amber-50/50 dark:bg-cardDark border border-amber-200 dark:border-borderDark rounded-2xl p-5 shadow-sm space-y-3";
 
-      if (mismatches.length > 0) {
-        mismatches.forEach(m => {
-          const card = document.createElement('div');
-          card.className = "bg-amber-50/50 dark:bg-cardDark border border-amber-200 dark:border-borderDark rounded-2xl p-5 shadow-sm space-y-3";
+            const header = document.createElement("div");
+            header.className =
+              "flex items-center gap-2 text-amber-800 dark:text-amber-400 font-bold text-sm";
+            header.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0"></i><span>Possible Inconsistency: ${m.title}</span>`;
 
-          const header = document.createElement('div');
-          header.className = "flex items-center gap-2 text-amber-800 dark:text-amber-400 font-bold text-sm";
-          header.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0"></i><span>Possible Inconsistency: ${m.title}</span>`;
+            const explanation = document.createElement("p");
+            explanation.className = "text-xs text-slate-700 dark:text-slate-300 leading-relaxed";
+            explanation.textContent = m.explanation;
 
-          const explanation = document.createElement('p');
-          explanation.className = "text-xs text-slate-700 dark:text-slate-300 leading-relaxed";
-          explanation.textContent = m.explanation;
+            card.appendChild(header);
+            card.appendChild(explanation);
 
-          card.appendChild(header);
-          card.appendChild(explanation);
-
-          // Find associated evidence excerpt if present
-          if (Array.isArray(m.evidenceIds) && m.evidenceIds.length > 0 && Array.isArray(r.evidence)) {
-            const ev = r.evidence.find(e => m.evidenceIds.includes(e.id));
-            if (ev && ev.excerpt) {
-              const details = document.createElement('details');
-              details.className = "group cursor-pointer pt-1";
-              details.innerHTML = `
+            // Find associated evidence excerpt if present
+            if (
+              Array.isArray(m.evidenceIds) &&
+              m.evidenceIds.length > 0 &&
+              Array.isArray(r.evidence)
+            ) {
+              const ev = r.evidence.find((e) => m.evidenceIds.includes(e.id));
+              if (ev && ev.excerpt) {
+                const details = document.createElement("details");
+                details.className = "group cursor-pointer pt-1";
+                details.innerHTML = `
                 <summary class="text-xs text-accentTeal font-medium flex items-center gap-1 select-none hover:underline">
                   <i data-lucide="chevron-right" class="w-3.5 h-3.5 transition-transform group-open:rotate-90"></i>
-                  <span>Inspect source excerpt (${ev.source || 'policy'})</span>
+                  <span>Inspect source excerpt (${ev.source || "policy"})</span>
                 </summary>
                 <div class="mt-2 p-3 rounded-xl bg-white dark:bg-wellDark border border-slate-200 dark:border-borderDark text-xs text-slate-600 dark:text-slate-400 italic">
                   “${ev.excerpt}”
                 </div>
               `;
-              card.appendChild(details);
+                card.appendChild(details);
+              }
             }
-          }
 
-          mismatchesContainer.appendChild(card);
-        });
-      } else {
-        const noMismatchCard = document.createElement('div');
-        noMismatchCard.className = "p-4 rounded-2xl bg-emerald-50/50 dark:bg-cardDark border border-emerald-200 dark:border-borderDark flex items-center gap-3 text-xs text-emerald-800 dark:text-emerald-300";
-        noMismatchCard.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5 text-emerald-600 shrink-0"></i><div><p class="font-bold">No Inconsistencies Detected</p><p class="text-[11px] text-slate-500 dark:text-slate-400">Inspected app capabilities align with developer disclosures.</p></div>`;
-        mismatchesContainer.appendChild(noMismatchCard);
-      }
+            mismatchesContainer.appendChild(card);
+          });
+        } else {
+          const noMismatchCard = document.createElement("div");
+          noMismatchCard.className =
+            "p-4 rounded-2xl bg-emerald-50/50 dark:bg-cardDark border border-emerald-200 dark:border-borderDark flex items-center gap-3 text-xs text-emerald-800 dark:text-emerald-300";
+          noMismatchCard.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5 text-emerald-600 shrink-0"></i><div><p class="font-bold">No Inconsistencies Detected</p><p class="text-[11px] text-slate-500 dark:text-slate-400">Inspected app capabilities align with developer disclosures.</p></div>`;
+          mismatchesContainer.appendChild(noMismatchCard);
+        }
 
-      // 6. Permissions List
-      const permsContainer = document.getElementById('permissions-list');
-      permsContainer.innerHTML = '';
-      const permissions = Array.isArray(r.permissions) ? r.permissions : [];
+        // 6. Permissions List
+        const permsContainer = document.getElementById("permissions-list");
+        permsContainer.innerHTML = "";
+        const permissions = Array.isArray(r.permissions) ? r.permissions : [];
 
-      if (permissions.length > 0) {
-        permissions.forEach(p => {
-          const item = document.createElement('div');
-          item.className = "p-2.5 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark flex items-center justify-between gap-2";
+        if (permissions.length > 0) {
+          permissions.forEach((p) => {
+            const item = document.createElement("div");
+            item.className =
+              "p-2.5 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark flex items-center justify-between gap-2";
 
-          const isSensitive = p.risk === 'HIGH' || p.risk === 'MODERATE';
-          const iconName = p.category === 'location' ? 'map-pin' :
-                           p.category === 'microphone' ? 'mic' :
-                           p.category === 'camera' ? 'camera' :
-                           p.category === 'photos' ? 'image' :
-                           p.category === 'contacts' ? 'users' : 'shield';
+            const isSensitive = p.risk === "HIGH" || p.risk === "MODERATE";
+            const iconName =
+              p.category === "location"
+                ? "map-pin"
+                : p.category === "microphone"
+                  ? "mic"
+                  : p.category === "camera"
+                    ? "camera"
+                    : p.category === "photos"
+                      ? "image"
+                      : p.category === "contacts"
+                        ? "users"
+                        : "shield";
 
-          item.innerHTML = `
+            item.innerHTML = `
             <div class="flex items-center gap-2.5 min-w-0">
-              <i data-lucide="${iconName}" class="w-4 h-4 ${isSensitive ? 'text-amber-500' : 'text-slate-400'} shrink-0"></i>
+              <i data-lucide="${iconName}" class="w-4 h-4 ${isSensitive ? "text-amber-500" : "text-slate-400"} shrink-0"></i>
               <div class="min-w-0">
-                <p class="font-semibold text-slate-900 dark:text-white truncate">${p.name || p.raw || 'Capability'}</p>
-                <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${p.explanation || 'Requested feature access'}</p>
+                <p class="font-semibold text-slate-900 dark:text-white truncate">${p.name || p.raw || "Capability"}</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${p.explanation || "Requested feature access"}</p>
               </div>
             </div>
             ${isSensitive ? '<span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 text-[10px] font-semibold shrink-0">Sensitive</span>' : '<span class="text-[10px] text-slate-400 shrink-0 font-mono">Standard</span>'}
           `;
-          permsContainer.appendChild(item);
-        });
-      } else {
-        permsContainer.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">No special permissions requested in available listing.</div>`;
-      }
+            permsContainer.appendChild(item);
+          });
+        } else {
+          permsContainer.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">No special permissions requested in available listing.</div>`;
+        }
 
-      // 7. Data Sharing List
-      const sharingContainer = document.getElementById('sharing-list');
-      sharingContainer.innerHTML = '';
-      const shared = Array.isArray(r.dataShared) ? r.dataShared : [];
+        // 7. Data Sharing List
+        const sharingContainer = document.getElementById("sharing-list");
+        sharingContainer.innerHTML = "";
+        const shared = Array.isArray(r.dataShared) ? r.dataShared : [];
 
-      if (shared.length > 0) {
-        shared.forEach(s => {
-          const item = document.createElement('div');
-          item.className = "p-2.5 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark space-y-1";
+        if (shared.length > 0) {
+          shared.forEach((s) => {
+            const item = document.createElement("div");
+            item.className =
+              "p-2.5 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark space-y-1";
 
-          const recipients = Array.isArray(s.recipients) && s.recipients.length > 0 ? s.recipients.join(', ') : 'Third-Party Partners';
-          const purposes = Array.isArray(s.purposes) && s.purposes.length > 0 ? s.purposes.join(', ') : 'Not explicitly specified';
+            const recipients =
+              Array.isArray(s.recipients) && s.recipients.length > 0
+                ? s.recipients.join(", ")
+                : "Third-Party Partners";
+            const purposes =
+              Array.isArray(s.purposes) && s.purposes.length > 0
+                ? s.purposes.join(", ")
+                : "Not explicitly specified";
 
-          item.innerHTML = `
+            item.innerHTML = `
             <div class="flex items-center justify-between">
-              <p class="font-semibold text-slate-900 dark:text-white">${s.label || s.type || 'Data Item'}</p>
+              <p class="font-semibold text-slate-900 dark:text-white">${s.label || s.type || "Data Item"}</p>
               <span class="text-[10px] text-accentTeal font-medium">Shared</span>
             </div>
             <p class="text-[11px] text-slate-500 dark:text-slate-400">Recipients: <span class="font-medium text-slate-700 dark:text-slate-300">${recipients}</span></p>
             <p class="text-[10px] text-slate-400">Purpose: ${purposes}</p>
           `;
-          sharingContainer.appendChild(item);
-        });
-      } else {
-        sharingContainer.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">No third-party data sharing declared.</div>`;
-      }
+            sharingContainer.appendChild(item);
+          });
+        } else {
+          sharingContainer.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">No third-party data sharing declared.</div>`;
+        }
 
-      // 8. Data Collected Grid
-      const collectionGrid = document.getElementById('collection-grid');
-      collectionGrid.innerHTML = '';
-      const collected = Array.isArray(r.dataCollected) ? r.dataCollected : [];
+        // 8. Data Collected Grid
+        const collectionGrid = document.getElementById("collection-grid");
+        collectionGrid.innerHTML = "";
+        const collected = Array.isArray(r.dataCollected) ? r.dataCollected : [];
 
-      if (collected.length > 0) {
-        collected.forEach(c => {
-          const item = document.createElement('div');
-          item.className = "p-3 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark space-y-1";
+        if (collected.length > 0) {
+          collected.forEach((c) => {
+            const item = document.createElement("div");
+            item.className =
+              "p-3 rounded-xl bg-slate-50 dark:bg-wellDark border border-slate-200 dark:border-borderDark space-y-1";
 
-          const purposes = Array.isArray(c.purposes) && c.purposes.length > 0 ? c.purposes.join(', ') : 'Functionality';
-          const sourceText = Array.isArray(c.source) ? c.source.join(', ') : 'Disclosures';
+            const purposes =
+              Array.isArray(c.purposes) && c.purposes.length > 0
+                ? c.purposes.join(", ")
+                : "Functionality";
+            const sourceText = Array.isArray(c.source) ? c.source.join(", ") : "Disclosures";
 
-          item.innerHTML = `
+            item.innerHTML = `
             <div class="flex items-center justify-between">
-              <p class="font-semibold text-slate-900 dark:text-white">${c.label || c.type || 'Personal Data'}</p>
+              <p class="font-semibold text-slate-900 dark:text-white">${c.label || c.type || "Personal Data"}</p>
               <span class="text-[10px] text-slate-400 font-mono">${sourceText}</span>
             </div>
             <p class="text-[11px] text-slate-500 dark:text-slate-400">Purposes: ${purposes}</p>
           `;
-          collectionGrid.appendChild(item);
-        });
-      } else {
-        collectionGrid.innerHTML = `<div class="col-span-2 p-4 text-center text-xs text-slate-400">No data collection items declared in inspected sources.</div>`;
-      }
+            collectionGrid.appendChild(item);
+          });
+        } else {
+          collectionGrid.innerHTML = `<div class="col-span-2 p-4 text-center text-xs text-slate-400">No data collection items declared in inspected sources.</div>`;
+        }
 
-      // 9. Positive Findings
-      const positiveContainer = document.getElementById('positive-findings-list');
-      positiveContainer.innerHTML = '';
-      const positives = Array.isArray(r.positiveFindings) ? r.positiveFindings : [];
+        // 9. Positive Findings
+        const positiveContainer = document.getElementById("positive-findings-list");
+        positiveContainer.innerHTML = "";
+        const positives = Array.isArray(r.positiveFindings) ? r.positiveFindings : [];
 
-      if (positives.length > 0) {
-        positives.forEach(p => {
-          const item = document.createElement('div');
-          item.className = "p-3 rounded-xl bg-white dark:bg-wellDark border border-emerald-100 dark:border-borderDark space-y-1";
-          item.innerHTML = `
+        if (positives.length > 0) {
+          positives.forEach((p) => {
+            const item = document.createElement("div");
+            item.className =
+              "p-3 rounded-xl bg-white dark:bg-wellDark border border-emerald-100 dark:border-borderDark space-y-1";
+            item.innerHTML = `
             <div class="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-white">
               <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
               <span>${p.title}</span>
             </div>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">${p.explanation || p.description || ''}</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">${p.explanation || p.description || ""}</p>
           `;
-          positiveContainer.appendChild(item);
-        });
-      } else {
-        positiveContainer.innerHTML = `<div class="col-span-3 p-4 text-center text-xs text-slate-400">No specific safeguards verified in current disclosures.</div>`;
+            positiveContainer.appendChild(item);
+          });
+        } else {
+          positiveContainer.innerHTML = `<div class="col-span-3 p-4 text-center text-xs text-slate-400">No specific safeguards verified in current disclosures.</div>`;
+        }
       }
-    }
 
-    // Export JSON handler
-    document.getElementById('btn-export-json').addEventListener('click', () => {
-      if (!currentReport) return;
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentReport, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `privacylens_${currentReport.app?.appId || 'report'}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    });
+      // Export JSON handler
+      document.getElementById("btn-export-json").addEventListener("click", () => {
+        if (!currentReport) return;
+        const dataStr =
+          "data:text/json;charset=utf-8," +
+          encodeURIComponent(JSON.stringify(currentReport, null, 2));
+        const downloadAnchor = document.createElement("a");
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute(
+          "download",
+          `privacylens_${currentReport.app?.appId || "report"}.json`,
+        );
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+      });
 
-    window.toggleTheme = function() {
-      const isDark = document.documentElement.classList.toggle('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      window.toggleTheme = function () {
+        const isDark = document.documentElement.classList.toggle("dark");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+        updateThemeIcons();
+      };
+
+      function updateThemeIcons() {
+        const isDark = document.documentElement.classList.contains("dark");
+        const sun = document.getElementById("theme-icon-sun");
+        const moon = document.getElementById("theme-icon-moon");
+        if (sun && moon) {
+          sun.classList.toggle("hidden", !isDark);
+          moon.classList.toggle("hidden", isDark);
+        }
+      }
+
       updateThemeIcons();
-    };
-
-    function updateThemeIcons() {
-      const isDark = document.documentElement.classList.contains('dark');
-      const sun = document.getElementById('theme-icon-sun');
-      const moon = document.getElementById('theme-icon-moon');
-      if (sun && moon) {
-        sun.classList.toggle('hidden', !isDark);
-        moon.classList.toggle('hidden', isDark);
-      }
-    }
-
-    updateThemeIcons();
-    loadReport();
-  </script>
-</body>
+      loadReport();
+    </script>
+  </body>
 </html>

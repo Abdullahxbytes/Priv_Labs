@@ -46,7 +46,7 @@ These are assigned branch names, not confirmation that branches have already bee
 
 **Uses:** Node.js, TypeScript, Groq API, and Zod; coordinates integration through the agreed Express API.
 
-**AI model:** **TO BE CONFIRMED** on the hackathon Groq account. It must be open-source/open-weight, **maximum 8B parameters**, used meaningfully for core policy analysis. Record the exact name, model ID, and parameter count once confirmed.
+**AI model:** OpenAI GPT-OSS 120B (`openai/gpt-oss-120b`) through Groq. It is open-weight and used meaningfully for core policy analysis. The former 8B restriction no longer applies.
 
 **Does not own:** frontend styling, Google Play scraper internals, or Cheerio policy-cleaning internals. Integration ownership does not authorize rewriting another member's module.
 

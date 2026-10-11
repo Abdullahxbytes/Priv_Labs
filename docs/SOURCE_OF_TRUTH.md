@@ -65,10 +65,10 @@ The comparison engine cross-checks the three sources. The scoring engine uses de
 
 Exact scoring weights, risk thresholds, and handling of incomplete inputs must be agreed during implementation before scores are shown to users. Do not invent these independently in different modules.
 
-- The selected AI model must be **8B parameters or smaller**.
+- Use the strongest production-ready open-weight model available through the configured Groq account when it materially improves structured policy extraction.
 - Open-source/open-weight AI must be used meaningfully in the core functionality, not only for cosmetic summaries.
 
-**Provider: Groq API. Model: TO BE CONFIRMED. Maximum size: 8B parameters.** Groq API is the agreed provider; the exact model remains unconfirmed until tested on the hackathon account. Once confirmed, document its exact name, model ID, and parameter count. Prompt version remains **TO BE FINALIZED**. AI output must be structured JSON validated with Zod before use.
+**Provider: Groq API. Model: OpenAI GPT-OSS 120B (`openai/gpt-oss-120b`).** The selected open-weight mixture-of-experts model has 117B total parameters and 5.1B active parameters per token. The former 8B event restriction no longer applies. AI output must be structured JSON validated with Zod before use.
 
 The final public repository must include an open-source license; the planned license is MIT.
 
@@ -82,7 +82,7 @@ The final public repository must include an open-source license; the planned lic
 | Play Store Retrieval | `google-play-scraper` |
 | Policy Retrieval / HTML Cleaning | Cheerio |
 | AI Provider | Groq API |
-| AI Model | TO BE CONFIRMED, maximum 8B parameters; open-source/open-weight |
+| AI Model | OpenAI GPT-OSS 120B (`openai/gpt-oss-120b`), open-weight |
 | Validation | Zod |
 | Cache | In-memory `Map` |
 | Environment Configuration | `.env`; `.env.example` contains variable names only |
