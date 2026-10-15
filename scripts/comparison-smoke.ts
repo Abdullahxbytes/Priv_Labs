@@ -13,4 +13,5 @@ const policyMismatch = comparePrivacySources({ ...common, permissions: [], dataS
 if (policyMismatch.find((f) => f.id === "comparison-device_identifiers")?.status !== "possible_mismatch") throw new Error("policy mismatch case failed");
 const incomplete = comparePrivacySources({ ...common, sourceStatus: { ...statuses, dataSafety: "failed" } });
 if (incomplete.some((f) => f.status === "possible_mismatch")) throw new Error("missing source created false mismatch");
+if (incomplete.length !== 1 || incomplete[0]?.type !== "INSUFFICIENT_INFORMATION") throw new Error("missing sources were not condensed into one coverage notice");
 console.log("Comparison smoke test passed.");

@@ -2,7 +2,7 @@
 
 > **This document defines how AI is used in PrivacyLens. AI behavior must not be changed independently without team agreement.**
 
-Follow [SOURCE_OF_TRUTH.md](SOURCE_OF_TRUTH.md), [ARCHITECTURE.md](ARCHITECTURE.md), [API_CONTRACT.md](API_CONTRACT.md), [TEAM_TASKS.md](TEAM_TASKS.md), and [PRIVACY_ENGINE.md](team/PRIVACY_ENGINE.md). SOURCE_OF_TRUTH.md takes priority if documents conflict. This specification describes intended behavior; AI integration has not been implemented or tested yet.
+Follow [SOURCE_OF_TRUTH.md](SOURCE_OF_TRUTH.md), [ARCHITECTURE.md](ARCHITECTURE.md), [API_CONTRACT.md](API_CONTRACT.md), [TEAM_TASKS.md](TEAM_TASKS.md), and [PRIVACY_ENGINE.md](team/PRIVACY_ENGINE.md). SOURCE_OF_TRUTH.md takes priority if documents conflict. The live Groq connection and GPT-OSS 120B policy extraction were verified on 2026-10-12.
 
 ## 1. Purpose
 
@@ -18,13 +18,13 @@ AI does not retrieve app data, scrape Google Play, calculate the privacy score, 
 
 | Item | Value |
 | --- | --- |
-| Exact model name | TO BE CONFIRMED |
-| Exact model ID | TO BE CONFIRMED |
-| Exact parameter count | TO BE CONFIRMED |
+| Exact model name | OpenAI GPT-OSS 120B |
+| Exact model ID | `openai/gpt-oss-120b` |
+| Exact parameter count | 117B total; 5.1B active per token |
 | Provider/runtime | Groq API |
-| Maximum size | **8B parameters** |
+| Model class | Open-weight mixture-of-experts model |
 
-The model must be open-source/open-weight, available through the hackathon Groq account, and suitable for structured JSON extraction. Confirm account availability and test extraction before recording model details. Do not invent values or use a model above the event's 8B limit.
+The former 8B event restriction has been removed. The project now uses the largest production model confirmed available through the configured Groq account. Keep the model environment-configurable and recheck account availability before deployment.
 
 ## 4. AI Input
 
@@ -171,11 +171,11 @@ Send only information needed for policy analysis. Do not send API secrets, unrel
 
 ## 18. Token / Input Size Handling
 
-Check practical input limits after confirming the model, allowing room for instructions and output. If cleaned text is too long, split at meaningful section boundaries, analyze chunks independently, validate each result, and merge findings deterministically with duplicates removed.
+The configured Groq tier currently allows 8,000 tokens per minute for GPT-OSS 120B. Policy input is therefore bounded to approximately 18,000 characters, leaving room for instructions and output. When a policy exceeds this limit, deterministic preprocessing selects excerpts around privacy-relevant terms while preserving the beginning and end of the policy.
 
-Keep evidence tied to its source section internally. Preserve conflicting or conditional statements instead of arbitrarily picking one. A chunk's `not_found` cannot establish whole-policy absence; another chunk may contain the relevant disclosure.
+Keep evidence tied to inspected source text. Preserve conflicting or conditional statements instead of arbitrarily picking one. A selective analysis cannot establish whole-policy absence.
 
-Do not blindly truncate important content. If coverage is incomplete, make the limitation visible through the existing report summary and preserve failure status when a chunk fails. Exact chunk size and model settings remain unconfirmed; keep the implementation simple for the hackathon.
+Do not silently truncate long policies. Add an `INSUFFICIENT_INFORMATION` comparison notice stating that privacy-relevant sections were selected, keep the score free from missing-data penalties, and direct users to the original policy for complete context.
 
 ## 19. Prompt Version
 
@@ -190,7 +190,7 @@ Use conservative generation settings suitable for structured extraction, not cre
 - AI may misunderstand ambiguous legal wording.
 - Policy text may be incomplete and external sites may block retrieval.
 - Disclosures do not establish verified runtime behavior.
-- Long policies may require chunking, with incomplete coverage made visible.
+- Long policies may use selective privacy-section analysis, with incomplete coverage made visible.
 - Evidence extraction may be imperfect even when output passes validation.
 - Results are informational, can contain mistakes, and are not legal advice.
 
@@ -200,11 +200,8 @@ Use conservative generation settings suitable for structured extraction, not cre
 
 ## 23. To Be Confirmed
 
-- Exact Groq model name.
-- Exact model ID.
-- Exact parameter count, within the 8B maximum.
 - Final prompt text.
 - Final generation settings.
-- Chunk size if chunking is required.
+- Final production request budget after deployment-tier limits are known.
 
 Remove these items only after actual confirmation.

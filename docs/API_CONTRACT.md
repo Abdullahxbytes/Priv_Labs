@@ -302,7 +302,7 @@ Groq receives cleaned policy text and returns conceptual structured JSON:
 
 **Validate AI output with Zod before use.** Exact Zod code belongs in implementation; this document defines shared meaning. Malformed output permits controlled parsing/retry, followed by validation, or partial continuation with `aiAnalysis: failed`. Syntactic validation does not prove claims are true; retain source-backed evidence. AI output contains no final score, risk assignment, or cross-source mismatch verdict.
 
-Provider: **Groq API**. Model: **TO BE CONFIRMED** on the hackathon account, open-source/open-weight, **maximum 8B parameters**. No provider or stack change is introduced here.
+Provider: **Groq API**. Model: **OpenAI GPT-OSS 120B** with model ID **`openai/gpt-oss-120b`**. It is an open-weight mixture-of-experts model with 117B total parameters and 5.1B active parameters per token. The former 8B restriction no longer applies.
 
 ## 17. Error Contract
 

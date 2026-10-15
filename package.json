@@ -2,6 +2,10 @@
   "name": "privacylens",
   "private": true,
   "scripts": {
+    "frontend:dev": "npm --prefix frontend run dev",
+    "frontend:build": "npm --prefix frontend run build",
+    "frontend:start": "npm --prefix frontend run start",
+    "frontend:check": "npm --prefix frontend run typecheck && npm --prefix frontend run lint",
     "groq:smoke": "tsx scripts/groq-smoke.ts",
     "policy:smoke": "tsx scripts/policy-extraction-smoke.ts",
     "comparison:smoke": "tsx scripts/comparison-smoke.ts",

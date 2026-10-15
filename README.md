@@ -127,9 +127,8 @@ repository's package files.
 ## AI Component
 
 -   **Provider/runtime:** Groq API.
--   **Model name and model ID:** To be confirmed by the team.
--   **Parameter count:** Must be confirmed and must not exceed **8
-    billion parameters** to meet the hackathon requirement.
+-   **Model name and model ID:** OpenAI GPT-OSS 120B, `openai/gpt-oss-120b`.
+-   **Parameter count:** 117B total parameters with 5.1B active parameters per token.
 -   **Purpose:** Extract privacy-related disclosures from cleaned policy
     text into structured findings, with uncertainty and evidence where
     available.
@@ -139,10 +138,8 @@ repository's package files.
     score. The score and risk level are produced by deterministic rules
     agreed by the team.
 
-Do not publish an unconfirmed model name, parameter count, or model
-license. Update this section once the exact model ID, parameter size,
-license, and availability through the hackathon account have been
-verified.
+The former 8B event restriction no longer applies. Keep the model ID in
+`GROQ_MODEL` so deployments can change it without modifying source code.
 
 ## Repository Structure
 

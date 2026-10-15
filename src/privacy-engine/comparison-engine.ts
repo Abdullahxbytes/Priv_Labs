@@ -41,7 +41,7 @@ export interface ComparisonFinding {
 }
 
 const CATEGORY_ALIASES: Record<string, string> = {
-  access_fine_location: "location", access_coarse_location: "location", location: "location", geolocation: "location",
+  access_fine_location: "location", access_coarse_location: "location", approximate_location: "location", approximate_location_network_based: "location", precise_location: "location", precise_location_gps_and_network_based: "location", location: "location", geolocation: "location",
   read_contacts: "contacts", contacts: "contacts", address_book: "contacts",
   camera: "camera", take_pictures: "camera", microphone: "microphone", record_audio: "microphone",
   photos: "photos", pictures: "photos", photos_and_videos: "photos", photos_media_files: "photos",
@@ -73,6 +73,28 @@ function findingType(permission: boolean, dataSafety: boolean): ComparisonFindin
 }
 
 export function comparePrivacySources(input: ComparisonInput): ComparisonFinding[] {
+  const requiredSources: ComparisonSource[] = ["permissions", "dataSafety", "privacyPolicy"];
+  const missingSources = requiredSources.filter((source) => !sourceReady(input.sourceStatus[source]));
+
+  if (missingSources.length > 0) {
+    const labels: Record<ComparisonSource, string> = {
+      permissions: "permissions",
+      dataSafety: "Google Play Data Safety",
+      privacyPolicy: "privacy policy analysis",
+    };
+    const unavailable = missingSources.map((source) => labels[source]).join(", ");
+    return [{
+      id: "comparison-incomplete-coverage",
+      type: "INSUFFICIENT_INFORMATION",
+      severity: null,
+      title: "Comparison coverage incomplete",
+      explanation: `A complete comparison was not possible because ${unavailable} was unavailable. Missing information is treated as unknown.`,
+      sources: missingSources,
+      evidenceIds: [],
+      status: "insufficient_information",
+    }];
+  }
+
   const categories = new Set<string>();
   const addCategory = (value: string | null | undefined, fallback?: string) => {
     const category = normalizePrivacyCategory(value) ?? normalizePrivacyCategory(fallback);
@@ -97,18 +119,11 @@ export function comparePrivacySources(input: ComparisonInput): ComparisonFinding
       .filter((item) => normalizePrivacyCategory(item.type) === category);
     const policy = policyItems.some((item) => item.status === "found");
     const policyUnclear = policyItems.some((item) => item.status === "unclear");
-    const requiredSources: ComparisonSource[] = ["permissions", "dataSafety", "privacyPolicy"];
-    const missing = requiredSources.filter((source) => !sourceReady(input.sourceStatus[source]));
     let status: ComparisonStatus;
     let type: ComparisonFinding["type"];
     let title: string;
     let explanation: string;
-    if (missing.length > 0) {
-      status = "insufficient_information";
-      type = "INSUFFICIENT_INFORMATION";
-      title = `${category} comparison incomplete`;
-      explanation = `The available sources do not provide enough information to compare ${category}.`;
-    } else if (policyUnclear) {
+    if (policyUnclear) {
       status = "unclear";
       type = "UNCLEAR_DISCLOSURE";
       title = `${category} disclosure is unclear`;

@@ -79,7 +79,7 @@ Allowed status values are `Proposed`, `Accepted`, `Superseded`, and `Rejected`. 
 
 **Date:** 2026-10-10
 
-**Status:** Accepted
+**Status:** Superseded
 
 **Decision:** The core AI must use an open-source/open-weight model of 8B parameters or fewer through the Groq API. The exact model name, model ID, and parameter count remain **TO BE CONFIRMED** until verified on the hackathon Groq account.
 
@@ -87,7 +87,7 @@ Allowed status values are `Proposed`, `Accepted`, `Superseded`, and `Rejected`. 
 
 **Impact:** Member 3 must confirm the account-available model before implementation and record the confirmation. AI behavior must remain structured, evidence-grounded, and separate from scoring.
 
-**Supersedes:** None
+**Supersedes:** None. Replaced by DEC-009.
 
 **Related Docs:**
 - `docs/SOURCE_OF_TRUTH.md`
@@ -219,7 +219,6 @@ Future teammates and coding agents must add a decision before changing architect
 
 These remain intentionally open because the referenced documents do not finalize them:
 
-- Exact Groq model name, ID, and parameter count (within the 8B limit).
 - Final AI prompt and generation settings.
 - Complete normalized category mappings, permission risk/expected-use rules, and detailed cache freshness metadata.
 - Progress transport and exact retry/chunk-size behavior.

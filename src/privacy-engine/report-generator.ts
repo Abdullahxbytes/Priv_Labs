@@ -6,6 +6,7 @@ export interface ReportInput extends ComparisonInput {
   app: object;
   comparisons: ComparisonFinding[];
   policyUrl?: string | null;
+  aiAnalysisStatus?: "available" | "cached" | "failed" | "unavailable";
 }
 
 function policyEvidence(policy: PrivacyExtraction, sourceUrl: string | null) {

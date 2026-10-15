@@ -74,6 +74,7 @@ router.get('/:appId', async (req: Request, res: Response) => {
     sourceStatus,
     comparisons,
     policyUrl: data.privacyPolicy.url,
+    aiAnalysisStatus,
   });
   res.status(200).json(report);
 });

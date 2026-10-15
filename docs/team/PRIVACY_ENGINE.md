@@ -14,7 +14,7 @@ Member 3 is also the integration owner. Coordinate interfaces without taking ove
 
 Use **Node.js, TypeScript, Groq API, and Zod**, integrating through the agreed Express API.
 
-**AI model: TO BE CONFIRMED.** It must be open-source/open-weight, **maximum 8B parameters**, and available through the hackathon Groq account. Do not invent a model ID or assume availability. Record the exact name, ID, and parameter count once confirmed. AI must meaningfully perform core policy analysis, not only cosmetic summaries.
+**AI model: OpenAI GPT-OSS 120B (`openai/gpt-oss-120b`).** It is open-weight, available through the configured Groq account, and used meaningfully for core policy analysis. The former 8B restriction no longer applies.
 
 ## Read First
 
@@ -148,7 +148,7 @@ May modify Groq integration, AI analysis modules, Zod schemas for AI output, nor
 
 Do not redesign the frontend, rewrite Google Play scraper internals or Cheerio policy retrieval, change frozen fields or score direction, add a database, introduce new core features, or replace Groq as the agreed provider. The MVP cache remains an in-memory `Map`.
 
-**Do not choose a model larger than 8B parameters.** This is an event restriction, not a discretionary team preference.
+Keep `GROQ_MODEL` environment-configurable and reverify model availability before deployment. A future model change requires a decision-log entry and live structured-output validation.
 
 ## Coding Agent Rules
 

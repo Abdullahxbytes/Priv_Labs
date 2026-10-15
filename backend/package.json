@@ -2,11 +2,11 @@
   "name": "privacylens-backend",
   "version": "1.0.0",
   "description": "PrivacyLens backend — App Data / Retrieval layer",
-  "main": "dist/index.js",
+  "main": "dist/backend/src/index.js",
   "scripts": {
     "dev": "nodemon --exec tsx src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/backend/src/index.js",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
