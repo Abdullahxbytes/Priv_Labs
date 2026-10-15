@@ -24,7 +24,9 @@ export interface ComparisonInput {
   permissions: PermissionInput[];
   dataSafety: DataSafetyInput | null;
   policyAnalysis: PrivacyExtraction | null;
-  sourceStatus: Record<ComparisonSource, SourceAvailability>;
+  sourceStatus: Record<ComparisonSource, SourceAvailability> & {
+    aiAnalysis?: SourceAvailability;
+  };
 }
 
 export interface ComparisonFinding {
@@ -42,15 +44,23 @@ const CATEGORY_ALIASES: Record<string, string> = {
   access_fine_location: "location", access_coarse_location: "location", location: "location", geolocation: "location",
   read_contacts: "contacts", contacts: "contacts", address_book: "contacts",
   camera: "camera", take_pictures: "camera", microphone: "microphone", record_audio: "microphone",
-  photos: "photos", pictures: "photos", messages: "messages", sms: "messages",
-  financial_information: "financial_information", health_information: "health_information",
+  photos: "photos", pictures: "photos", photos_and_videos: "photos", photos_media_files: "photos",
+  messages: "messages", sms: "messages",
+  financial_info: "financial_information", financial_information: "financial_information",
+  health_and_fitness: "health_information", health_information: "health_information",
+  device_id_call_information: "device_identifiers", device_or_other_ids: "device_identifiers",
   device_identifiers: "device_identifiers", advertising_id: "device_identifiers",
 };
 
 export function normalizePrivacyCategory(value: string | null | undefined): string | null {
   if (!value) return null;
-  const key = value.toLowerCase().trim().replace(/^android\.permission\./, "").replace(/[\s-]+/g, "_");
-  return CATEGORY_ALIASES[key] ?? (key || null);
+  const key = value
+    .toLowerCase()
+    .trim()
+    .replace(/^android\.permission\./, "")
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+  return CATEGORY_ALIASES[key] ?? null;
 }
 
 function sourceReady(status: SourceAvailability): boolean {
@@ -64,15 +74,25 @@ function findingType(permission: boolean, dataSafety: boolean): ComparisonFindin
 
 export function comparePrivacySources(input: ComparisonInput): ComparisonFinding[] {
   const categories = new Set<string>();
-  for (const permission of input.permissions) categories.add(normalizePrivacyCategory(permission.category ?? permission.name) ?? "unknown");
-  for (const item of input.dataSafety?.collected ?? []) categories.add(normalizePrivacyCategory(item.type) ?? "unknown");
-  for (const item of input.policyAnalysis?.dataCollected ?? []) categories.add(normalizePrivacyCategory(item.type) ?? "unknown");
-  for (const item of input.policyAnalysis?.dataShared ?? []) categories.add(normalizePrivacyCategory(item.type) ?? "unknown");
+  const addCategory = (value: string | null | undefined, fallback?: string) => {
+    const category = normalizePrivacyCategory(value) ?? normalizePrivacyCategory(fallback);
+    if (category) categories.add(category);
+  };
+  for (const permission of input.permissions) addCategory(permission.category, permission.name);
+  for (const item of input.dataSafety?.collected ?? []) addCategory(item.type, item.label);
+  for (const item of input.policyAnalysis?.dataCollected ?? []) addCategory(item.type);
+  for (const item of input.policyAnalysis?.dataShared ?? []) addCategory(item.type);
 
   const findings: ComparisonFinding[] = [];
   for (const category of [...categories].sort()) {
-    const permission = input.permissions.some((item) => normalizePrivacyCategory(item.category ?? item.name) === category);
-    const dataSafety = (input.dataSafety?.collected ?? []).some((item) => normalizePrivacyCategory(item.type) === category);
+    const permission = input.permissions.some(
+      (item) =>
+        (normalizePrivacyCategory(item.category) ?? normalizePrivacyCategory(item.name)) === category,
+    );
+    const dataSafety = (input.dataSafety?.collected ?? []).some(
+      (item) =>
+        (normalizePrivacyCategory(item.type) ?? normalizePrivacyCategory(item.label)) === category,
+    );
     const policyItems = [...(input.policyAnalysis?.dataCollected ?? []), ...(input.policyAnalysis?.dataShared ?? [])]
       .filter((item) => normalizePrivacyCategory(item.type) === category);
     const policy = policyItems.some((item) => item.status === "found");

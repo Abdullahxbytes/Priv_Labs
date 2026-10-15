@@ -192,6 +192,25 @@ Allowed status values are `Proposed`, `Accepted`, `Superseded`, and `Rejected`. 
 - `docs/ARCHITECTURE.md`
 - `docs/team/APP_DATA.md`
 
+## DEC-009 — Deterministic Privacy Scoring Rules
+
+**Date:** 2026-10-15
+
+**Status:** Accepted
+
+**Decision:** Finalize the deterministic scoring weights, caps, duplicate handling, and risk thresholds in `docs/SCORING.md`. Requested access, declared collection, declared sharing, supported disclosure conflicts, and unclear comparisons reduce the score. Evidence-backed deletion and security practices can raise it. Missing sources and `INSUFFICIENT_INFORMATION` do not change the score.
+
+**Reason:** The former mismatch-only implementation returned 100 for apps with substantial observed access and disclosure evidence whenever comparisons were incomplete. The finalized rules make the score reflect available evidence without treating missing data as proof or as an automatic penalty.
+
+**Impact:** The backend is the only score authority. The frontend displays the returned score together with coverage and uncertainty. Comparison findings remain limited to the agreed essential privacy categories.
+
+**Supersedes:** The unresolved scoring portions of DEC-004 and DEC-007
+
+**Related Docs:**
+- `docs/SCORING.md`
+- `docs/API_CONTRACT.md`
+- `docs/SOURCE_OF_TRUTH.md`
+
 ## Change Control
 
 Future teammates and coding agents must add a decision before changing architecture, frozen API fields, major schema structure, the AI provider/model, prompt behavior, scoring weights or thresholds, score direction, team ownership, MVP scope, caching/storage strategy, or major error handling. Record replacements by marking the prior entry `Superseded`; do not silently change shared assumptions.
@@ -202,6 +221,5 @@ These remain intentionally open because the referenced documents do not finalize
 
 - Exact Groq model name, ID, and parameter count (within the 8B limit).
 - Final AI prompt and generation settings.
-- Scoring weights, thresholds, duplicate-penalty rules, and insufficient-evidence score/risk representation; `docs/SCORING.md` does not yet exist.
 - Complete normalized category mappings, permission risk/expected-use rules, and detailed cache freshness metadata.
 - Progress transport and exact retry/chunk-size behavior.

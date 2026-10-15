@@ -7,13 +7,15 @@
  * Never fabricate cache entries.
  */
 
-import { RetrievalOutput } from '../types';
+import { RetrievalOutput } from "../types";
 
 interface CacheEntry {
   data: RetrievalOutput;
   /** Unix timestamp (ms) when this entry was stored. */
   storedAt: number;
 }
+
+const CACHE_TTL_MS = 15 * 60 * 1000;
 
 class RetrievalCache {
   private readonly store = new Map<string, CacheEntry>();
@@ -25,7 +27,13 @@ class RetrievalCache {
 
   /** Retrieve a cached result. Returns undefined on cache miss. */
   get(appId: string): CacheEntry | undefined {
-    return this.store.get(appId);
+    const entry = this.store.get(appId);
+    if (!entry) return undefined;
+    if (Date.now() - entry.storedAt >= CACHE_TTL_MS) {
+      this.store.delete(appId);
+      return undefined;
+    }
+    return entry;
   }
 
   /** Check whether a fresh-enough cached entry exists. */

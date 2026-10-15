@@ -5,6 +5,7 @@
     "groq:smoke": "tsx scripts/groq-smoke.ts",
     "policy:smoke": "tsx scripts/policy-extraction-smoke.ts",
     "comparison:smoke": "tsx scripts/comparison-smoke.ts",
+    "scoring:smoke": "tsx scripts/scoring-smoke.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

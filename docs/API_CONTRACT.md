@@ -92,7 +92,7 @@ Uses the search-result field rules, plus required key `storeUrl` (URL string or 
 
 Type: **number**, finite and within **0–100**, calculated by deterministic backend rules. **100 = better privacy / lower privacy risk; 0 = worse privacy / higher privacy risk.** AI and frontend must not calculate it.
 
-Weights, thresholds, rounding, minimum evidence, and incomplete-input handling remain **TO BE FINALIZED** in `docs/SCORING.md`. If evidence cannot support a meaningful score, the team must agree on its representation here before implementing that case. This contract does not yet authorize nullable score/risk values or invented defaults. Partial source loss alone must not trigger a full-flow error; resolve the incomplete-input rules before release.
+Weights, thresholds, rounding, duplicate handling, and incomplete-input behavior are defined in `docs/SCORING.md`. Missing or failed sources do not create score penalties; available evidence is scored deterministically. Partial source loss alone must not trigger a full-flow error, and the frontend must present incomplete coverage from `sourceStatus` alongside the numeric result.
 
 ## 6. `riskLevel`
 

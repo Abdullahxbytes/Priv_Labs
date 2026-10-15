@@ -12,10 +12,14 @@
  * Each source has its own independent status in sourceStatus.
  */
 
-import { retrieveAppMetadata, retrieveDataSafety, retrievePermissions } from './appDataRetrieval';
-import { retrievePrivacyPolicy } from '../policy/policyRetrieval';
-import { retrievalCache } from '../cache/retrievalCache';
-import { RetrievalOutput, RetrievalSourceStatus } from '../types';
+import {
+  retrieveAppMetadata,
+  retrieveDataSafety,
+  retrievePermissions,
+} from "./appDataRetrieval";
+import { retrievePrivacyPolicy } from "../policy/policyRetrieval";
+import { retrievalCache } from "../cache/retrievalCache";
+import { RetrievalOutput, RetrievalSourceStatus } from "../types";
 
 export interface OrchestratorResult {
   output: RetrievalOutput | null;
@@ -31,7 +35,9 @@ export interface OrchestratorResult {
  * Retrieve all available source data for the given appId.
  * Returns a RetrievalOutput regardless of partial failures — sourceStatus reflects availability.
  */
-export async function retrieveAppData(appId: string): Promise<OrchestratorResult> {
+export async function retrieveAppData(
+  appId: string,
+): Promise<OrchestratorResult> {
   // 1. Cache check — return previously retrieved real data if available
   const cached = retrievalCache.get(appId);
   if (cached) {
@@ -45,14 +51,14 @@ export async function retrieveAppData(appId: string): Promise<OrchestratorResult
 
   if (!metadataResult.app) {
     const isNotFound =
-      metadataResult.error?.includes('404') ||
-      metadataResult.error?.toLowerCase().includes('not found') ||
-      metadataResult.error?.toLowerCase().includes('app not found');
+      metadataResult.error?.includes("404") ||
+      metadataResult.error?.toLowerCase().includes("not found") ||
+      metadataResult.error?.toLowerCase().includes("app not found");
 
     return {
       output: null,
       notFound: isNotFound,
-      error: metadataResult.error ?? 'App metadata retrieval failed',
+      error: metadataResult.error ?? "App metadata retrieval failed",
     };
   }
 
@@ -63,7 +69,9 @@ export async function retrieveAppData(appId: string): Promise<OrchestratorResult
   ]);
 
   // 4. Privacy policy
-  const policyResult = await retrievePrivacyPolicy(metadataResult.privacyPolicyUrl);
+  const policyUrl =
+    dataSafetyResult.privacyPolicyUrl ?? metadataResult.privacyPolicyUrl;
+  const policyResult = await retrievePrivacyPolicy(policyUrl);
 
   // 5. Assemble output
   const sourceStatus: RetrievalSourceStatus = {
@@ -81,7 +89,10 @@ export async function retrieveAppData(appId: string): Promise<OrchestratorResult
   };
 
   // 6. Cache the freshly retrieved output (real data only)
-  retrievalCache.set(appId, output);
+  const hasFailedSource = Object.values(sourceStatus).some(
+    (status) => status === "failed",
+  );
+  if (!hasFailedSource) retrievalCache.set(appId, output);
 
   return { output };
 }
@@ -93,9 +104,12 @@ export async function retrieveAppData(appId: string): Promise<OrchestratorResult
 function markAsCached(output: RetrievalOutput): RetrievalOutput {
   const cachedStatus = { ...output.sourceStatus };
 
-  if (cachedStatus.permissions === 'available') cachedStatus.permissions = 'cached';
-  if (cachedStatus.dataSafety === 'available') cachedStatus.dataSafety = 'cached';
-  if (cachedStatus.privacyPolicy === 'available') cachedStatus.privacyPolicy = 'cached';
+  if (cachedStatus.permissions === "available")
+    cachedStatus.permissions = "cached";
+  if (cachedStatus.dataSafety === "available")
+    cachedStatus.dataSafety = "cached";
+  if (cachedStatus.privacyPolicy === "available")
+    cachedStatus.privacyPolicy = "cached";
 
   return { ...output, sourceStatus: cachedStatus };
 }

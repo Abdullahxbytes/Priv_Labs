@@ -3,6 +3,7 @@
  * Reads PORT from environment (default 4000).
  */
 
+import './config';
 import { createApp } from './app';
 
 const PORT = parseInt(process.env['PORT'] ?? '4000', 10);
