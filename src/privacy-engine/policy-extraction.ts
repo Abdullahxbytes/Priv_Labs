@@ -106,7 +106,7 @@ export async function analyzePrivacyPolicy(
 
   const prompt = buildPolicyExtractionPrompt(selectPolicyExcerpts(policyText));
   try {
-    return parseAndValidate(await callGroq(prompt, { json: true, maxTokens: MAX_EXTRACTION_TOKENS }));
+    return parseAndValidate(await callGroq(prompt));
   } catch (firstError) {
     try {
       return parseAndValidate(
@@ -119,85 +119,4 @@ export async function analyzePrivacyPolicy(
       );
     }
   }
-}
-
-const statusPriority = { not_found: 0, unclear: 1, found: 2 } as const;
-type ExtractionStatus = keyof typeof statusPriority;
-
-function bestStatus(items: Array<{ status: ExtractionStatus }>): ExtractionStatus {
-  let best: ExtractionStatus = "not_found";
-  for (const item of items) {
-    if (statusPriority[item.status] > statusPriority[best]) best = item.status;
-  }
-  return best;
-}
-
-function unique(values: string[]): string[] {
-  return [...new Set(values.map((value) => value.trim()).filter(Boolean))];
-}
-
-function mergeExtractions(extractions: PrivacyExtraction[]): PrivacyExtraction {
-  const collectedGroups = new Map<string, PrivacyExtraction["dataCollected"]>();
-  const sharedGroups = new Map<string, PrivacyExtraction["dataShared"]>();
-  const securityGroups = new Map<string, PrivacyExtraction["security"]>();
-
-  for (const extraction of extractions) {
-    for (const item of extraction.dataCollected) {
-      const key = item.type.trim().toLowerCase();
-      collectedGroups.set(key, [...(collectedGroups.get(key) ?? []), item]);
-    }
-    for (const item of extraction.dataShared) {
-      const key = item.type.trim().toLowerCase();
-      sharedGroups.set(key, [...(sharedGroups.get(key) ?? []), item]);
-    }
-    for (const item of extraction.security) {
-      const key = item.type.trim().toLowerCase();
-      securityGroups.set(key, [...(securityGroups.get(key) ?? []), item]);
-    }
-  }
-
-  const dataCollected = [...collectedGroups.values()].map((items) => {
-    const status = bestStatus(items);
-    const preferred = items.find((item) => item.status === status && item.evidence) ?? items.find((item) => item.status === status) ?? items[0]!;
-    return { type: preferred.type, status, purposes: unique(items.flatMap((item) => item.purposes)), evidence: preferred.evidence };
-  });
-  const dataShared = [...sharedGroups.values()].map((items) => {
-    const status = bestStatus(items);
-    const preferred = items.find((item) => item.status === status && item.evidence) ?? items.find((item) => item.status === status) ?? items[0]!;
-    return { type: preferred.type, status, recipients: unique(items.flatMap((item) => item.recipients)), purposes: unique(items.flatMap((item) => item.purposes)), evidence: preferred.evidence };
-  });
-  const security = [...securityGroups.values()].map((items) => {
-    const status = bestStatus(items);
-    const preferred = items.find((item) => item.status === status && item.evidence) ?? items.find((item) => item.status === status) ?? items[0]!;
-    return { type: preferred.type, status, evidence: preferred.evidence };
-  });
-
-  function mergeDetail(key: "retention" | "deletion") {
-    const items = extractions.map((item) => item[key]);
-    const status = bestStatus(items);
-    const preferred = items.find((item) => item.status === status && (item.evidence || item.details)) ?? items.find((item) => item.status === status) ?? items[0]!;
-    return { status, details: preferred.details, evidence: preferred.evidence };
-  }
-
-  return {
-    dataCollected,
-    dataShared,
-    thirdParties: unique(extractions.flatMap((item) => item.thirdParties)),
-    retention: mergeDetail("retention"),
-    deletion: mergeDetail("deletion"),
-    security,
-  };
-}
-
-export async function analyzePrivacyPolicy(policyText: string): Promise<PrivacyExtraction> {
-  const normalized = policyText.trim();
-  if (!normalized) throw new PrivacyPolicyAnalysisError("policy text must not be empty.");
-
-  const chunks = splitPolicyText(selectRelevantPolicyText(normalized));
-  const extractions: PrivacyExtraction[] = [];
-  for (let index = 0; index < chunks.length; index += CHUNK_CONCURRENCY) {
-    const batch = chunks.slice(index, index + CHUNK_CONCURRENCY);
-    extractions.push(...await Promise.all(batch.map((chunk, offset) => analyzeChunk(chunk, index + offset, chunks.length))));
-  }
-  return mergeExtractions(extractions);
 }
