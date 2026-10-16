@@ -38,10 +38,6 @@ export function AppShell({ children }: { children: ReactNode }) {
             width={80}
             height={80}
           />
-          <p>
-            Disclosures describe stated practices, not observed app behavior. AI can make mistakes.
-            Reports are informational, not legal advice.
-          </p>
         </div>
       </footer>
     </div>

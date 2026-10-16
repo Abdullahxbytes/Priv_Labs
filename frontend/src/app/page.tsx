@@ -62,9 +62,7 @@ export default function HomePage() {
 
       <section className="credits-section" aria-labelledby="credits-heading">
         <div>
-          <h2 id="credits-heading">
-            The People Who made it possible.
-          </h2>
+          <h2 id="credits-heading">The People Who made it possible.</h2>
         </div>
         <div className="contributor-panel">
           <div className="contributor-avatars" aria-label="Project contributors">

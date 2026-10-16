@@ -27,9 +27,27 @@ for (const width of [320, 768, 1440]) {
             privacyPolicy: "available",
             aiAnalysis: "available",
           },
-          permissions: [],
+          permissions: [
+            {
+              raw: null,
+              name: "Read contacts",
+              category: "identity",
+              risk: "HIGH",
+              expected: null,
+              explanation: "Can read account or contact identity information.",
+            },
+          ],
           dataCollected: [],
-          dataShared: [],
+          dataShared: [
+            {
+              type: "approximate_location",
+              label: "Approximate location",
+              purposes: ["Advertising"],
+              source: ["dataSafety"],
+              status: "found",
+              recipients: ["Advertisers"],
+            },
+          ],
           summary: [],
           positiveFindings: [],
           mismatches: [
@@ -77,7 +95,19 @@ for (const width of [320, 768, 1440]) {
     await page.keyboard.press("Enter");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(app.name);
     await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
-    await page.getByRole("link", { name: "View supporting excerpt" }).click();
+    await expect(
+      page.getByRole("list", { name: "Can access details" }).getByText("Identity", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page
+        .getByRole("list", { name: "Says it shares details" })
+        .getByText("Approximate location", { exact: true }),
+    ).toBeVisible();
+    await expect(page.locator(".report-source-pills")).toHaveCount(0);
+    await page.getByRole("button", { name: "See the details" }).click();
+    await expect(page.locator("#full-report")).toHaveAttribute("open", "");
+    await page.getByText("What did not match?", { exact: true }).click();
+    await page.getByRole("link", { name: "See the proof" }).click();
     await expect(page.locator("#evidence-snippet")).toHaveAttribute("open", "");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,

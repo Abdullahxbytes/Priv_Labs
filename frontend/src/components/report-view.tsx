@@ -2,281 +2,28 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MaterialIcon } from "@/components/material-icon";
-import { Skeleton } from "@/components/ui/skeleton";
+import {
+  DetailSection,
+  EvidenceLinks,
+  FindingList,
+  SourceIcon,
+  StatusMark,
+} from "@/components/report/report-details";
+import { ReportSignalCard } from "@/components/report/report-signal-card";
+import { ReportSkeleton } from "@/components/report/report-skeleton";
+import {
+  humanize,
+  isReady,
+  plainFinding,
+  sourceLabels,
+  type Finding,
+  type SourceName,
+  type SourceState,
+} from "@/components/report/report-utils";
+import { ScoreGauge } from "@/components/report/score-gauge";
 import { reportSchema, safeLink, type PrivacyReport } from "@/lib/report";
-
-const sourceLabels = {
-  permissions: "Phone access",
-  dataSafety: "Google Play answers",
-  privacyPolicy: "Privacy policy",
-  aiAnalysis: "Policy review",
-} as const;
-
-type SourceName = keyof typeof sourceLabels;
-type SourceState = PrivacyReport["sourceStatus"][SourceName];
-type Finding = PrivacyReport["mismatches"][number];
-
-function useAnimatedNumber(target: number, duration = 850): number {
-  const [value, setValue] = useState(0);
-
-  useEffect(() => {
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) {
-      const frame = window.requestAnimationFrame(() => setValue(target));
-      return () => window.cancelAnimationFrame(frame);
-    }
-
-    let frame = 0;
-    let startTime: number | null = null;
-    const tick = (time: number) => {
-      startTime ??= time;
-      const progress = Math.min((time - startTime) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(Math.round(target * eased));
-      if (progress < 1) frame = window.requestAnimationFrame(tick);
-    };
-    frame = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(frame);
-  }, [duration, target]);
-
-  return value;
-}
-
-function AnimatedNumber({ value, duration }: { value: number; duration?: number }) {
-  return <>{useAnimatedNumber(value, duration)}</>;
-}
-
-const friendlyNames: Record<string, string> = {
-  app_activity: "App activity",
-  app_interactions: "App interactions",
-  crash_logs: "Crash logs",
-  device_identifiers: "Device identifiers",
-  financial_information: "Financial information",
-  health_information: "Health information",
-  precise_location: "Precise location",
-  approximate_location: "Approximate location",
-  full_network_access: "Network access",
-};
-
-function humanize(value: string): string {
-  const normalized = value
-    .trim()
-    .toLowerCase()
-    .replace(/[\s-]+/g, "_");
-  return (
-    friendlyNames[normalized] ??
-    normalized.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())
-  );
-}
-
-function findingSubject(item: Finding): string {
-  const fromId = item.id.replace(/^comparison-/, "").replace(/^selective-/, "");
-  if (fromId && fromId !== item.id) return humanize(fromId);
-  return humanize(item.title.split(" ")[0] ?? "this data");
-}
-
-function plainFinding(item: Finding): { title: string; explanation: string } {
-  const subject = findingSubject(item);
-  if (item.type === "PERMISSION_DISCLOSURE_MISMATCH") {
-    return {
-      title: `${subject} access is not clearly explained`,
-      explanation: `The app asks for ${subject.toLowerCase()} access, but its public information does not clearly explain why.`,
-    };
-  }
-  if (item.type === "DATA_SAFETY_POLICY_MISMATCH") {
-    return {
-      title: `${subject} details do not match`,
-      explanation: `Google Play and the privacy policy say different things about ${subject.toLowerCase()}.`,
-    };
-  }
-  if (item.type === "UNCLEAR_DISCLOSURE") {
-    return {
-      title: `${subject} details are unclear`,
-      explanation: `The privacy policy does not clearly explain how ${subject.toLowerCase()} is handled.`,
-    };
-  }
-  return {
-    title: `${subject} could not be checked`,
-    explanation: `Some information was missing, so we could not compare the app's statements about ${subject.toLowerCase()}.`,
-  };
-}
-
-function isReady(state: SourceState): boolean {
-  return state === "available" || state === "cached";
-}
-
-function SourceIcon({ name }: { name: SourceName }) {
-  const icons: Record<SourceName, string> = {
-    permissions: "lock",
-    dataSafety: "database",
-    privacyPolicy: "description",
-    aiAnalysis: "visibility",
-  };
-  return <MaterialIcon name={icons[name]} size={19} />;
-}
-
-function StatusMark({ state }: { state: SourceState }) {
-  if (isReady(state)) return <MaterialIcon name="check_circle" size={18} fill />;
-  if (state === "failed") return <MaterialIcon name="cancel" size={18} fill />;
-  return <MaterialIcon name="help" size={18} fill />;
-}
-
-function ScoreGauge({ score, tone }: { score: number; tone: string }) {
-  const boundedScore = Math.max(0, Math.min(100, Math.round(score)));
-  const animatedScore = useAnimatedNumber(boundedScore, 950);
-  const circumference = 2 * Math.PI * 46;
-  const offset = circumference * (1 - animatedScore / 100);
-
-  return (
-    <div
-      className={`score-gauge ${tone}`}
-      role="img"
-      aria-label={`Privacy score ${boundedScore} out of 100. Higher is better.`}
-    >
-      <svg viewBox="0 0 120 120" aria-hidden="true">
-        <circle className="score-gauge-track" cx="60" cy="60" r="46" />
-        <circle
-          className="score-gauge-value"
-          cx="60"
-          cy="60"
-          r="46"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-        />
-      </svg>
-      <div className="score-gauge-label">
-        <strong>{animatedScore}</strong>
-        <span>/100</span>
-        <small>Privacy score</small>
-      </div>
-      <p>Higher is better</p>
-    </div>
-  );
-}
-
-function DetailSection({
-  title,
-  count,
-  children,
-}: {
-  title: string;
-  count: number;
-  children: ReactNode;
-}) {
-  return (
-    <details className="report-details">
-      <summary>
-        <span>{title}</span>
-        <span className="summary-count">{count}</span>
-        <MaterialIcon name="expand_more" size={20} className="summary-caret" />
-      </summary>
-      <div className="details-body">{children}</div>
-    </details>
-  );
-}
-
-function EvidenceLinks({ ids }: { ids: string[] }) {
-  if (!ids.length) return null;
-  return (
-    <ul className="evidence-links">
-      {ids.map((id) => (
-        <li key={id}>
-          <a
-            href={`#evidence-${encodeURIComponent(id)}`}
-            onClick={() => {
-              const fullReport = document.getElementById("full-report");
-              if (fullReport instanceof HTMLDetailsElement) fullReport.open = true;
-              const evidenceGroup = document.getElementById("evidence-group");
-              if (evidenceGroup instanceof HTMLDetailsElement) evidenceGroup.open = true;
-              const target = document.getElementById(`evidence-${encodeURIComponent(id)}`);
-              if (target instanceof HTMLDetailsElement) target.open = true;
-              window.setTimeout(
-                () => target?.scrollIntoView({ behavior: "smooth", block: "center" }),
-                0,
-              );
-            }}
-          >
-            See the proof
-          </a>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function FindingList({ findings }: { findings: Finding[] }) {
-  if (!findings.length) return <p className="report-empty">No findings in this section.</p>;
-  return (
-    <div className="expanded-finding-list">
-      {findings.map((item) => {
-        const plain = plainFinding(item);
-        return (
-          <article key={item.id} className="expanded-finding">
-            <h3>{plain.title}</h3>
-            <p>{plain.explanation}</p>
-            <EvidenceLinks ids={item.evidenceIds} />
-          </article>
-        );
-      })}
-    </div>
-  );
-}
-
-function ReportSkeleton({ appId }: { appId: string }) {
-  return (
-    <section className="report-loading" role="status" aria-label="Generating privacy report">
-      <span className="sr-only">Generating the privacy report for {appId}.</span>
-      <div className="report-loading-nav">
-        <Skeleton className="skeleton-back" />
-      </div>
-      <div className="report-skeleton-board" aria-hidden="true">
-        <div className="report-skeleton-header">
-          <Skeleton className="skeleton-app-icon" />
-          <div>
-            <Skeleton className="skeleton-app-name" />
-            <Skeleton className="skeleton-developer" />
-          </div>
-          <Skeleton className="skeleton-coverage" />
-        </div>
-        <div className="report-skeleton-grid">
-          <div>
-            <Skeleton className="skeleton-label" />
-            <Skeleton className="skeleton-score" />
-            <Skeleton className="skeleton-caption" />
-            <Skeleton className="skeleton-badge" />
-          </div>
-          <div>
-            <Skeleton className="skeleton-label" />
-            <Skeleton className="skeleton-title-wide" />
-            <Skeleton className="skeleton-title-short" />
-            <Skeleton className="skeleton-caption-wide" />
-            <div className="skeleton-reasons">
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
-            </div>
-          </div>
-          <div>
-            <Skeleton className="skeleton-label" />
-            <div className="skeleton-chips">
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
-            </div>
-            <Skeleton className="skeleton-note" />
-          </div>
-        </div>
-        <div className="report-skeleton-actions">
-          <Skeleton />
-          <Skeleton />
-        </div>
-      </div>
-    </section>
-  );
-}
 
 export function ReportView({ appId }: { appId: string }) {
   const [report, setReport] = useState<PrivacyReport | null>(null);
@@ -366,11 +113,12 @@ export function ReportView({ appId }: { appId: string }) {
   const sensitiveAccess = [
     ...new Set(report.permissions.map((item) => humanize(item.category ?? item.name))),
   ];
-  const visibleAccess = sensitiveAccess.slice(0, 2);
   const sharedData = [
     ...new Set(report.dataShared.map((item) => humanize(item.label ?? item.type))),
   ];
-  const visibleSharedData = sharedData.slice(0, 2);
+  const warningSigns = [
+    ...new Set([...mismatches, ...notices].map((item) => plainFinding(item).title)),
+  ];
 
   const verdict = !complete
     ? {
@@ -378,7 +126,8 @@ export function ReportView({ appId }: { appId: string }) {
         icon: "help",
         label: "Not enough information",
         action: "We cannot give a clear answer yet",
-        detail: "The source pills above show exactly what we could and could not check.",
+        detail:
+          "Some information was missing. Open the details below to see what we could not check.",
       }
     : report.riskLevel === "VERY HIGH" || report.riskLevel === "HIGH"
       ? {
@@ -458,18 +207,6 @@ export function ReportView({ appId }: { appId: string }) {
               <p>{report.app.developer ?? "Developer not listed"}</p>
             </div>
           </div>
-          <div className="report-source-pills" aria-label="Information sources checked">
-            {sourceEntries.map(([name, state]) => (
-              <span
-                key={name}
-                className={`report-source-pill ${isReady(state) ? "ready" : state}`}
-                aria-label={`${sourceLabels[name]}: ${isReady(state) ? "checked" : state === "failed" ? "check failed" : "not found"}`}
-              >
-                <StatusMark state={state} />
-                <span>{sourceLabels[name]}</span>
-              </span>
-            ))}
-          </div>
         </header>
 
         <div className="verdict-panel">
@@ -487,76 +224,24 @@ export function ReportView({ appId }: { appId: string }) {
           </div>
 
           <div className="signal-grid" aria-label="Main privacy findings">
-            <article className="report-signal-card">
-              <MaterialIcon name="phonelink_lock" size={22} />
-              <div>
-                <span>Can access</span>
-                <strong>
-                  {sensitiveAccess.length ? (
-                    <>
-                      <AnimatedNumber value={sensitiveAccess.length} /> phone area
-                      {sensitiveAccess.length === 1 ? "" : "s"}
-                    </>
-                  ) : (
-                    "Nothing we could confirm"
-                  )}
-                </strong>
-                <p>
-                  {visibleAccess.length
-                    ? visibleAccess.join(" and ")
-                    : "No permission list was found"}
-                </p>
-              </div>
-            </article>
-            <article className="report-signal-card">
-              <MaterialIcon name="share" size={22} />
-              <div>
-                <span>Says it shares</span>
-                <strong>
-                  {sharedData.length ? (
-                    <>
-                      <AnimatedNumber value={sharedData.length} /> type
-                      {sharedData.length === 1 ? "" : "s"} of data
-                    </>
-                  ) : (
-                    "No sharing found"
-                  )}
-                </strong>
-                <p>
-                  {visibleSharedData.length
-                    ? visibleSharedData.join(" and ")
-                    : "This is not proof that sharing never happens"}
-                </p>
-              </div>
-            </article>
-            <article className="report-signal-card">
-              <MaterialIcon name={mismatches.length ? "warning" : "fact_check"} size={22} />
-              <div>
-                <span>Warning signs</span>
-                <strong>
-                  {mismatches.length ? (
-                    <>
-                      <AnimatedNumber value={mismatches.length} /> statement
-                      {mismatches.length === 1 ? "" : "s"} do not match
-                    </>
-                  ) : notices.length ? (
-                    <>
-                      <AnimatedNumber value={notices.length} /> check
-                      {notices.length === 1 ? "" : "s"} unfinished
-                    </>
-                  ) : (
-                    "No major conflict found"
-                  )}
-                </strong>
-                <p>
-                  {mismatches.length
-                    ? "The app's public information disagrees"
-                    : notices.length
-                      ? "Some information was missing or unclear"
-                      : "The public statements were consistent"}
-                </p>
-              </div>
-            </article>
+            <ReportSignalCard
+              icon="phonelink_lock"
+              label="Can access"
+              items={sensitiveAccess}
+              emptyMessage="No phone access was found"
+            />
+            <ReportSignalCard
+              icon="share"
+              label="Says it shares"
+              items={sharedData}
+              emptyMessage="No shared data was listed"
+            />
+            <ReportSignalCard
+              icon={warningSigns.length ? "warning" : "fact_check"}
+              label="Warning signs"
+              items={warningSigns}
+              emptyMessage="No major conflict was found"
+            />
           </div>
 
           <div className="report-boundary">
